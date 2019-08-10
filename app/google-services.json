@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "338615859870",
+    "firebase_url": "https://merrytown-68658.firebaseio.com",
+    "project_id": "merrytown-68658",
+    "storage_bucket": "merrytown-68658.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:338615859870:android:463747a5b84297e4",
+        "android_client_info": {
+          "package_name": "com.WowChat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "338615859870-u5lnh38ofu3h1iudk35k4m7sq21grkrg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQI73NXQX9m25FbwF3ZCXhRkrqAJIaYD0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "338615859870-u5lnh38ofu3h1iudk35k4m7sq21grkrg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:338615859870:android:c0c36b2582ba3e17",
+        "android_client_info": {
+          "package_name": "com.example.merrytown"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "338615859870-u5lnh38ofu3h1iudk35k4m7sq21grkrg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQI73NXQX9m25FbwF3ZCXhRkrqAJIaYD0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "338615859870-u5lnh38ofu3h1iudk35k4m7sq21grkrg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

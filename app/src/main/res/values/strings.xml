@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">WoWChat</string>
+    <string name="no_chats_msg">It seems you do not have any chats. No need to Worry , search your friends from the button on the bottom right.</string>
+</resources>
