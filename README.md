@@ -2,11 +2,9 @@
 
 Wowchat is an android based messaging application.
 
-### Technologies Used
-- Django
-- Python
-- RESTful APIs
-- SQL
+### Libraries Used
+- Room
+- Retrofit
 
 ## Login
 <img src="app/src/main/res/drawable/ss.jpg" width="300" height="500"/>
