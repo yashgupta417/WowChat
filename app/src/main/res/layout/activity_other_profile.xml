@@ -1,53 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:context=".Activities.OtherProfileActivity">
+    tools:context=".Activities.ProfileActivity">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/o_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginBottom="8dp"
+        android:background="#00BFFF"
+        app:title="Profile"
+        app:titleTextColor="#FFF"
+        app:layout_constraintBottom_toBottomOf="@+id/recyclerView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar"
+    </androidx.appcompat.widget.Toolbar>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/o_profile_image"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="20dp"
+        android:onClick="seeDP"
+        android:src="@color/colorAccent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/o_toolbar"
+        app:layout_constraintVertical_bias="0.0" />
+
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        >
-
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:id="@+id/toolbar_layout"
+        android:orientation="vertical"
+        android:layout_marginTop="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/o_profile_image"
+        app:layout_constraintVertical_bias="0.0">
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:contentScrim="#00BFFF"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:title="Yash Gupta"
-            >
-            <ImageView
+            android:layout_height="wrap_content"
+            app:cardElevation="4dp">
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/toolbar_image"
-                app:layout_collapseMode="parallax"
-                />
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                android:orientation="vertical"
+                android:paddingVertical="10dp"
+                android:paddingHorizontal="10dp"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Name"/>
+                <TextView
+                    android:id="@+id/o_profile_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Yash Gupta"
+                    android:textColor="#000"
+                    android:textSize="20sp"
+                    />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardElevation="4dp"
+            android:layout_marginTop="1dp">
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin"/>
+                android:orientation="vertical"
+                android:paddingVertical="10dp"
+                android:paddingHorizontal="10dp"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Username"/>
+                <TextView
+                    android:id="@+id/o_profile_username"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="yashgupta417"
+                    android:textColor="#000"
+                    android:textSize="20sp"
+                    />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+        <!--
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardElevation="4dp"
+            android:layout_marginTop="1dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:paddingVertical="13dp"
+                android:paddingHorizontal="10dp"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Bio"/>
+                <TextView
+                    android:id="@+id/o_profile_bio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="I am good"
+                    android:textColor="#000"
+                    android:textSize="14sp"
+                    />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>-->
 
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
-    </com.google.android.material.appbar.AppBarLayout>
+
+
+    </LinearLayout>
 
 
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_anchor="@id/app_bar"
-        app:layout_anchorGravity="bottom|end"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

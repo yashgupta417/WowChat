@@ -39,30 +39,6 @@ public class MainActivity extends AppCompatActivity {
     public static MainAcitivityViewModel viewModel;
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        Log.i("****MainAC"," i am pasued");
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.i("****MainAC"," i am resumed");
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        Log.i("****MainAC"," i am restarted");
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.i("****MainAC"," i am destroyed");
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i("****MainAC"," i am created");
@@ -79,10 +55,6 @@ public class MainActivity extends AppCompatActivity {
         viewModel.getAllChats().observe(this, new Observer<List<UserInfoTable>>() {
             @Override
             public void onChanged(List<UserInfoTable> userInfoTables) {
-//                for(UserInfoTable userInfoTable:userInfoTables){
-//                    Log.i("****main",userInfoTable.getPersonImage());
-//                }
-
                 adapter.submitList(userInfoTables);
             }
         });
@@ -95,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("lastName",userInfoTable.getPersonLastName());
                 intent.putExtra("email",userInfoTable.getPersonEmail());
                 intent.putExtra("image",userInfoTable.getPersonImage());
-                Log.i("****",userInfoTable.getPersonImage());
                 intent.putExtra("id",userInfoTable.getPersonId());
                 startActivity(intent);
 
@@ -119,10 +90,11 @@ public class MainActivity extends AppCompatActivity {
 
         switch (item.getItemId()){
             case R.id.profile: goToProfile(); break;
+            case R.id.search: goToSearch();break;
         }
         return true;
     }
-    public void goToSearch(View view){
+    public void goToSearch(){
         Intent intent=new Intent(getApplicationContext(),SearchActivity.class);
         startActivity(intent);
     }

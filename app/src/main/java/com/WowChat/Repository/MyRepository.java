@@ -151,8 +151,9 @@ public class MyRepository {
             String id=userInfoTable.getPersonId();
             String latestMessage=userInfoTable.getLatestMesage();
             String latestMessageTime=userInfoTable.getLatestMessageTime();
-
-            userInfoDao.updateOrCreateUserInfo(username,firstName,lastName,email,image,id,latestMessage,latestMessageTime);
+            String latestMessageAmorPm=userInfoTable.getLatestMessageAMorPM();
+            String latestMessageDate=userInfoTable.getLatestMessagedate();
+            userInfoDao.updateOrCreateUserInfo(username,firstName,lastName,email,image,id,latestMessage,latestMessageTime,latestMessageDate,latestMessageAmorPm);
             return  null;
         }
     }

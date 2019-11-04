@@ -36,7 +36,7 @@ public class ShotsActivity extends AppCompatActivity {
         friend_id=getIntent().getStringExtra("friend_id");
         me_id=getIntent().getStringExtra("me_id");
         recyclerView = findViewById(R.id.shots_recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,true));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,true));
         recyclerView.setHasFixedSize(true);
         adapter = new ShotAdapter(this);
         recyclerView.setAdapter(adapter);

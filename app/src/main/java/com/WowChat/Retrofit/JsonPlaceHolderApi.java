@@ -60,6 +60,20 @@ public interface JsonPlaceHolderApi {
                                 @Part("to") RequestBody to,
                                 @Part MultipartBody.Part image);
 
+    @Multipart
+    @POST("message_list/")
+    Call<Message> sendImageMessage(@Part("id") RequestBody id,
+                                @Part("text") RequestBody text,
+                                @Part("sender") RequestBody sender,
+                                @Part("recipient") RequestBody recipient,
+                                @Part("date") RequestBody date,
+                                @Part("time") RequestBody time,
+                                @Part("amorpm") RequestBody amorpm,
+                                @Part MultipartBody.Part image);
+
     @POST("update_message_status/")
     Call<Message> updateMessageStatus(@Query("id")String id,@Query("status") String status);
+
+    @GET("user_list/")
+    Call<List<User>> queryUsers(@Query("query") String q);
 }

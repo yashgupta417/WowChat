@@ -11,7 +11,7 @@ import com.WowChat.Room.DAOs.MessageDao;
 import com.WowChat.Room.Entities.MessageTable;
 import com.WowChat.Room.Entities.UserInfoTable;
 
-@Database(entities = {UserInfoTable.class, MessageTable.class},version=18,exportSchema = false)
+@Database(entities = {UserInfoTable.class, MessageTable.class},version=21,exportSchema = false)
 public abstract class MyDatabase extends RoomDatabase {
     private static com.WowChat.Room.MyDatabase instance;
     public abstract UserInfoDao chatDao();

@@ -29,7 +29,7 @@ public class User {
 
     @SerializedName("image")
     @Expose
-    private Object image;
+    private String image;
 
     @SerializedName("last_seen_time")
     @Expose
@@ -109,11 +109,11 @@ public class User {
 
 
 
-    public Object getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(Object image) {
+    public void setImage(String image) {
         this.image = image;
     }
 

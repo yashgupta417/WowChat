@@ -1,6 +1,7 @@
 package com.WowChat.Adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,10 @@ import com.WowChat.Room.Entities.UserInfoTable;
 import com.bumptech.glide.Glide;
 import com.WowChat.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
@@ -28,6 +33,7 @@ public class ChatBoardAdapter extends ListAdapter<com.WowChat.Room.Entities.User
     public ChatBoardAdapter(Context context) {
         super(DIFF_CALLBACK);
         this.context=context;
+        setHasStableIds(true);
     }
     private static final DiffUtil.ItemCallback<UserInfoTable> DIFF_CALLBACK=new DiffUtil.ItemCallback<UserInfoTable>() {
         @Override
@@ -93,19 +99,46 @@ public class ChatBoardAdapter extends ListAdapter<com.WowChat.Room.Entities.User
         return myViewHolder;
     }
 
+
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
         myViewHolder.nameTextView.setText(getItem(i).getPersonFirstName());
-        myViewHolder.latestMessageTextView.setText(getItem(i).getLatestMesage());
-        myViewHolder.timeTextView.setText(getItem(i).getLatestMessageTime());
+        if(getItem(i).getLatestMesage()!=null) {
+            myViewHolder.latestMessageTextView.setText(getItem(i).getLatestMesage());
+        }else{
+            myViewHolder.latestMessageTextView.setText("Image");
+        }
+
+        SimpleDateFormat timePreciseformat = new SimpleDateFormat("hh:mm:ss");
+        SimpleDateFormat AMOrPMFormat=new SimpleDateFormat("a");
+        SimpleDateFormat dateformat = new SimpleDateFormat("dd-MM-yyyy");
+        Calendar c = Calendar.getInstance();
+
+        String currDate=dateformat.format(c.getTime());
+
+        if(currDate.equals(getItem(i).getLatestMessagedate())){
+
+            String t=getItem(i).getLatestMessageTime();
+            String amorpm=getItem(i).getLatestMessageAMorPM();
+            Log.i("%%%",t.substring(0,5)+ amorpm);
+            myViewHolder.timeTextView.setText(t.substring(0,5)+ " "+amorpm);
+        }else{
+            Log.i("%%%",getItem(i).getLatestMessagedate());
+            myViewHolder.timeTextView.setText(getItem(i).getLatestMessagedate());
+        }
+
+
+
         Integer unseenCount=getItem(i).getUnseenMessageCount();
         if(unseenCount==null || unseenCount==0){
             myViewHolder.unseenCountTextview.setVisibility(View.INVISIBLE);
             myViewHolder.unseenCountTextview.setText("0");
-        }else{
+            myViewHolder.timeTextView.setTextColor(Color.GRAY);
 
+        }else{
+            myViewHolder.timeTextView.setTextColor(Color.parseColor("#00BFFF"));
             myViewHolder.unseenCountTextview.setVisibility(View.VISIBLE);
-            myViewHolder.unseenCountTextview.setText(Integer.toString(unseenCount)+" New Messages");
+            myViewHolder.unseenCountTextview.setText(Integer.toString(unseenCount));
         }
 
         if(!getItem(i).getPersonImage().equals("")){

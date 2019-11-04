@@ -61,8 +61,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="20dp"
                 android:fontFamily="sans-serif-medium"
-                android:onClick="onClickShot"
-                android:text="shots"
                 android:textColor="#FFF"
                 android:textSize="17sp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -95,12 +93,12 @@
         android:id="@+id/recyclerView2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/send_button"
+        android:layout_marginBottom="52dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
     <EditText
         android:id="@+id/textMessage"
@@ -108,17 +106,19 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
-        android:layout_marginEnd="90dp"
+        android:layout_marginEnd="60dp"
         android:layout_marginBottom="5dp"
+
         android:background="@drawable/message_of_me"
         android:ems="10"
         android:gravity="start|top"
         android:hint="type here...."
         android:inputType="textMultiLine"
-        android:paddingVertical="5dp"
+        android:maxHeight="150dp"
         android:paddingHorizontal="15dp"
+        android:paddingVertical="10dp"
         android:paddingLeft="5dp"
-        android:textSize="22sp"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -127,39 +127,32 @@
         app:layout_constraintVertical_bias="1.0"></EditText>
 
 
-    <Button
-        android:id="@+id/send_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:layout_marginBottom="2dp"
-        android:background="@drawable/message_back_sender"
-        android:enabled="false"
-        android:onClick="onClickSendButton"
-        android:text="Send"
-        android:textColor="#FFF"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/textMessage"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerView2"
-        app:layout_constraintVertical_bias="1.0" />
-
     <ImageView
-        android:id="@+id/heart"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginBottom="2dp"
-
+        android:id="@+id/image_message"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
         android:background="@drawable/message_back_sender"
-        android:onClick="onClickHeart"
-        android:src="@drawable/wave"
+        android:onClick="sendImageMessage"
+        android:padding="10dp"
+        android:src="@drawable/ic_photo_camera"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textMessage"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerView2"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/recyclerView2" />
+    <ImageView
+        android:visibility="invisible"
+        android:id="@+id/text_message"
+        android:clickable="false"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:background="@drawable/message_back_sender"
+        android:onClick="onClickSendButton"
+        android:padding="10dp"
+        android:src="@drawable/ic_send_"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textMessage"
+        app:layout_constraintTop_toBottomOf="@+id/recyclerView2" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

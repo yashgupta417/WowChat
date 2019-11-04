@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.WowChat.R;
 import com.WowChat.Room.Entities.MessageTable;
+import com.bumptech.glide.Glide;
 
 public class MessageAdapter extends ListAdapter<MessageTable, com.WowChat.Adapters.MessageAdapter.MessageViewHolder> {
     private com.WowChat.Adapters.MessageAdapter.onItemClickListener mlistener;
@@ -60,6 +62,8 @@ public class MessageAdapter extends ListAdapter<MessageTable, com.WowChat.Adapte
         TextView statusMe;
         LinearLayout linearLayoutMe;
         LinearLayout linearLayoutFriend;
+        ImageView imageMe;
+        ImageView imageFriend;
 
         public MessageViewHolder(@NonNull View itemView, final com.WowChat.Adapters.MessageAdapter.onItemClickListener listener) {
             super(itemView);
@@ -71,6 +75,8 @@ public class MessageAdapter extends ListAdapter<MessageTable, com.WowChat.Adapte
             timeFriend=itemView.findViewById(R.id.message_time_friend);
             statusMe=itemView.findViewById(R.id.message_status_me);
             statusFriend=itemView.findViewById(R.id.message_status_friend);
+            imageMe=itemView.findViewById(R.id.message_image_me);
+            imageFriend=itemView.findViewById(R.id.message_image_friend);
             itemView.setOnClickListener(
                     new View.OnClickListener() {
                         @Override
@@ -99,18 +105,37 @@ public class MessageAdapter extends ListAdapter<MessageTable, com.WowChat.Adapte
 
     @Override
     public void onBindViewHolder(@NonNull com.WowChat.Adapters.MessageAdapter.MessageViewHolder myViewHolder, int i) {
-        Log.i("****msg",getItem(i).getText());
+
         if(getItem(i).getSender().equals(me_id)){
-            myViewHolder.linearLayoutMe.animate().alpha(1);
-            myViewHolder.messageTextViewMe.setText(getItem(i).getText());
-            myViewHolder.timeMe.setText(getItem(i).getTimeofmessaging());
+            myViewHolder.linearLayoutFriend.setVisibility(View.GONE);
+            if(getItem(i).getImageAddress()==null){
+                myViewHolder.imageMe.setVisibility(View.GONE);
+            }else{
+                Glide.with(context).load(getItem(i).getImageAddress()).into(myViewHolder.imageMe);
+            }
+            if(getItem(i).getText()!=null){
+                myViewHolder.messageTextViewMe.setText(getItem(i).getText());
+            }else{
+                myViewHolder.messageTextViewMe.setVisibility(View.GONE);
+            }
+            myViewHolder.linearLayoutMe.setVisibility(View.VISIBLE);
+            myViewHolder.timeMe.setText(getItem(i).getTimeofmessaging().substring(0,5)+" "+getItem(i).getAMorPM());
             myViewHolder.statusMe.setText(" "+getItem(i).getStatus());
         }
         else{
-            myViewHolder.linearLayoutFriend.animate().alpha(1);
-            myViewHolder.messageTextViewFriend.setText(getItem(i).getText());
-            myViewHolder.timeFriend.setText(getItem(i).getTimeofmessaging());
-//            myViewHolder.statusFriend.setText(getItem(i).getStatus());
+            myViewHolder.linearLayoutMe.setVisibility(View.GONE);
+            if(getItem(i).getImageAddress()==null){
+                myViewHolder.imageFriend.setVisibility(View.GONE);
+            }else{
+                Glide.with(context).load(getItem(i).getImageAddress()).into(myViewHolder.imageFriend);
+            }
+            if(getItem(i).getText()!=null){
+                myViewHolder.messageTextViewFriend.setText(getItem(i).getText());
+            }else{
+                myViewHolder.messageTextViewFriend.setVisibility(View.GONE);
+            }
+            myViewHolder.linearLayoutFriend.setVisibility(View.VISIBLE);
+            myViewHolder.timeFriend.setText(getItem(i).getTimeofmessaging().substring(0,5)+" "+getItem(i).getAMorPM());
         }
 
     }

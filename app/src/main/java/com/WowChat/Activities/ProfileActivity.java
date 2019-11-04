@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.Manifest;
@@ -45,6 +46,7 @@ import static com.WowChat.Activities.MainActivity.viewModel;
 
 public class ProfileActivity extends AppCompatActivity {
     Uri image;
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -63,13 +65,12 @@ public class ProfileActivity extends AppCompatActivity {
             image=data.getData();
 
             if(image!=null){
-                Toast.makeText(this, "image taken", Toast.LENGTH_SHORT).show();
                 uploadPost();
             }
         }
     }
     public void chooseImage(View view){
-        Toast.makeText(this, "clicked", Toast.LENGTH_SHORT).show();
+
         if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)!=PackageManager.PERMISSION_GRANTED){
             requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},2);
             Log.i("me","inside if");
@@ -82,54 +83,23 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
     public CircleImageView circleImageView;
-    public EditText name;
+    public TextView name;
     public TextView username;
-    SeekBar speedSeekBar;
-    SeekBar pitchSeekBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        Toolbar toolbar=findViewById(R.id.p_toolbar);
+        setSupportActionBar(toolbar);
         circleImageView=findViewById(R.id.profile_image);
         name=findViewById(R.id.profile_name);
         username=findViewById(R.id.profile_username);
-        speedSeekBar=findViewById(R.id.speed_seekbar);
-        pitchSeekBar=findViewById(R.id.pitch_seekbar);
+
 
         setup();
         final SharedPreferences sharedPreferences=this.getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
-        speedSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                sharedPreferences.edit().putInt("speed",progress).apply();
-            }
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-        pitchSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                sharedPreferences.edit().putInt("pitch",progress).apply();
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
     }
     public void setup(){
         SharedPreferences sharedPreferences=this.getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
@@ -137,20 +107,17 @@ public class ProfileActivity extends AppCompatActivity {
         String lName=sharedPreferences.getString("last_name","");
         String uName=sharedPreferences.getString("username","");
         String imageURL=sharedPreferences.getString("image","");
-        Integer speed=sharedPreferences.getInt("speed",50);
-        Integer pitch=sharedPreferences.getInt("pitch",50);
+
         name.setText(fName+" "+lName);
         username.setText("@"+uName);
         if(!imageURL.equals("")){
-            Toast.makeText(this, imageURL, Toast.LENGTH_SHORT).show();
             Glide.with(this).load(imageURL).placeholder(R.drawable.user_img).into(circleImageView);
         }
         else {
             Glide.with(this).load(R.drawable.user_img).into(circleImageView);
         }
 
-        pitchSeekBar.setProgress(pitch);
-        speedSeekBar.setProgress(speed);
+
     }
     public String getRealPathFromURI(Uri uri) {
         Cursor cursor = getContentResolver().query(uri, null, null, null, null);

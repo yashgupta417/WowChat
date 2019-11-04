@@ -25,7 +25,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MyApp extends Application {
-    public static final String CHANNEL_1_ID = "channel1";
+    public static final String CHANNEL_GEN_ID = "channel2";
 
     @Override
     public void onCreate() {
@@ -47,23 +47,22 @@ public class MyApp extends Application {
     }
 
     private void createNotificationChannels() {
-        Log.i("****","inside 1");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Log.i("****","inside 2");
-            NotificationChannel channel1 = new NotificationChannel(
-                    CHANNEL_1_ID,
-                    "Channel 1",
-                    NotificationManager.IMPORTANCE_HIGH
+
+            NotificationChannel channelGen = new NotificationChannel(
+                    CHANNEL_GEN_ID,
+                    "Channel General",
+                    NotificationManager.IMPORTANCE_DEFAULT
             );
-//            Uri sound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/" + R.raw.stairs);
-//            AudioAttributes attributes = new AudioAttributes.Builder()
-//                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
-//                    .build();
-            channel1.setDescription("This is Channel 1");
-//            channel1.setSound(sound,attributes);
+           /*Uri sound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/" + R.raw.stairs);
+            AudioAttributes attributes = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                    .build();*/
+            channelGen.setDescription("This is Channel General");
+           // channelGen.setSound(sound,attributes);
 
             NotificationManager manager = getSystemService(NotificationManager.class);
-            manager.createNotificationChannel(channel1);
+            manager.createNotificationChannel(channelGen);
         }
     }
 

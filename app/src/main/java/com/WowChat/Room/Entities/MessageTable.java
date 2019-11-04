@@ -15,16 +15,21 @@ public class MessageTable {
     private String recipient;
     private String dateofmessaging;
     private String timeofmessaging;
+    private String AMorPM;
     private String status;
+    private String imageAddress;
 
 
-    public MessageTable(@NonNull String messageid,String text, String sender, String recipient, String dateofmessaging, String timeofmessaging) {
+    public MessageTable(@NonNull String messageid,String text, String sender,
+                        String recipient, String dateofmessaging, String timeofmessaging,String AMorPM,String imageAddress) {
         this.messageid=messageid;
         this.text = text;
         this.sender = sender;
         this.recipient = recipient;
         this.dateofmessaging = dateofmessaging;
         this.timeofmessaging = timeofmessaging;
+        this.AMorPM=AMorPM;
+        this.imageAddress=imageAddress;
     }
 
 
@@ -86,5 +91,21 @@ public class MessageTable {
 
     public void setMessageid(String messageid) {
         this.messageid = messageid;
+    }
+
+    public String getAMorPM() {
+        return AMorPM;
+    }
+
+    public void setAMorPM(String AMorPM) {
+        this.AMorPM = AMorPM;
+    }
+
+    public String getImageAddress() {
+        return imageAddress;
+    }
+
+    public void setImageAddress(String imageAddress) {
+        this.imageAddress = imageAddress;
     }
 }

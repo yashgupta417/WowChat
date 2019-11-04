@@ -20,11 +20,11 @@ public interface UserInfoDao {
     void update(UserInfoTable userInfoTable);
 
 
-    @Query("SELECT * FROM UserInfoTable ORDER BY latestMessagedate,latestMessageTime DESC")
+    @Query("SELECT * FROM UserInfoTable ORDER BY latestMessagedate DESC,latestMessageAMorPM ASC,latestMessageTime DESC")
     LiveData<List<UserInfoTable>> getAllChats();
 
-    @Query("INSERT OR REPLACE INTO UserInfoTable(personUsername,personFirstName,personLastName,personEmail,personImage,personId,latestMesage,latestMessageTime) VALUES(:personUsername,:personFirstName,:personLastName,:personEmail,:personImage,:personId,:latestMesage,:latestMessageTime)")
-    void updateOrCreateUserInfo(String personUsername, String personFirstName, String personLastName, String personEmail, String personImage, String personId, String latestMesage,String latestMessageTime);
+    @Query("INSERT OR REPLACE INTO UserInfoTable(personUsername,personFirstName,personLastName,personEmail,personImage,personId,latestMesage,latestMessageTime,latestMessagedate,latestMessageAMorPM) VALUES(:personUsername,:personFirstName,:personLastName,:personEmail,:personImage,:personId,:latestMesage,:latestMessageTime,:latestMessageDate,:latestMessageAmorPm)")
+    void updateOrCreateUserInfo(String personUsername, String personFirstName, String personLastName, String personEmail, String personImage, String personId, String latestMesage,String latestMessageTime,String latestMessageDate,String latestMessageAmorPm);
 
     @Query("DELETE FROM UserInfoTable")
     void deleteAllUserInfo();

@@ -35,7 +35,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.WowChat.MyApp.CHANNEL_1_ID;
+
+import static com.WowChat.MyApp.CHANNEL_GEN_ID;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
@@ -60,6 +61,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String date=remoteMessage.getData().get("date");
         String time=remoteMessage.getData().get("time");
         String status=remoteMessage.getData().get("status");
+        String amorpm=remoteMessage.getData().get("amorpm");
+        String msgimage=remoteMessage.getData().get("image");
         String image;
         if(text==null){
             MyRepository myRepository=new MyRepository(getApplication());
@@ -71,9 +74,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 image=remoteMessage.getData().get("s_image");
             }
 
-            MessageTable messageTable=new MessageTable(messsage_id,text,sender_id,recipient_id,date,time);
+            MessageTable messageTable=new MessageTable(messsage_id,text,sender_id,recipient_id,date,time,amorpm,msgimage);
             messageTable.setStatus("Sent");
-            UserInfoTable userInfoTable=new UserInfoTable(username,firstName,lastName,email,image,sender_id,text,time,date);
+            UserInfoTable userInfoTable=new UserInfoTable(username,firstName,lastName,email,image,sender_id,text,time,date,amorpm);
             MyRepository repository=new MyRepository(this.getApplication());
             repository.insertMessage(messageTable);
             repository.updateOrCreateUserInfo(userInfoTable);
@@ -108,18 +111,17 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             Bitmap icon = BitmapFactory.decodeResource(getResources(),
                     R.drawable.wow);
 
-            Notification notification = new NotificationCompat.Builder(this, CHANNEL_1_ID)
+            Notification notification = new NotificationCompat.Builder(this, CHANNEL_GEN_ID)
                     .setSmallIcon(R.drawable.wow)
                     .setLargeIcon(icon)
                     .setContentTitle(title)
                     .setContentText(message)
                     .setAutoCancel(true)
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setCategory(NotificationCompat.CATEGORY_MESSAGE)
                     .setContentIntent(pendingIntent)
                     .build();
 
-            notificationManager.notify(1, notification);
+            notificationManager.notify(2, notification);
         }else{
             Log.i("****","false");
         }
@@ -136,6 +138,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             public void onResponse(Call<FCMToken> call, Response<FCMToken> response) {
                 if(!response.isSuccessful()){
                    Log.i("****fcm","new token couldn't uploaded");
+                   return;
                 }
                 Log.i("****fcm","new token uploaded successfully");
             }

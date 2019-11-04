@@ -18,11 +18,12 @@ public class UserInfoTable {
     private String latestMesage;
     private String latestMessageTime;
     private String latestMessagedate;
+    private String latestMessageAMorPM;
     private Integer unseenMessageCount;
 
 
     public UserInfoTable(String personUsername, String personFirstName, String personLastName, String personEmail
-            , String personImage,String personId,String latestMesage,String latestMessageTime,String latestMessagedate) {
+            , String personImage,String personId,String latestMesage,String latestMessageTime,String latestMessagedate,String latestMessageAMorPM) {
 
         this.personUsername = personUsername;
         this.personFirstName = personFirstName;
@@ -33,6 +34,7 @@ public class UserInfoTable {
         this.latestMesage=latestMesage;
         this.latestMessageTime=latestMessageTime;
         this.latestMessagedate=latestMessagedate;
+        this.latestMessageAMorPM=latestMessageAMorPM;
     }
 
 
@@ -114,5 +116,13 @@ public class UserInfoTable {
 
     public void setLatestMessagedate(String latestMessagedate) {
         this.latestMessagedate = latestMessagedate;
+    }
+
+    public String getLatestMessageAMorPM() {
+        return latestMessageAMorPM;
+    }
+
+    public void setLatestMessageAMorPM(String latestMessageAMorPM) {
+        this.latestMessageAMorPM = latestMessageAMorPM;
     }
 }

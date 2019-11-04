@@ -23,9 +23,16 @@ public class Message {
     @SerializedName("sender")
     @Expose
     private Integer sender;
+    @SerializedName("amorpm")
+    @Expose
+    private String amorpm;
     @SerializedName("recipient")
     @Expose
     private Integer recipient;
+    @SerializedName("image")
+    @Expose
+    private String image;
+
 
     /**
      * No args constructor for use in serialization
@@ -41,13 +48,15 @@ public class Message {
      * @param recipient
      */
 
-    public Message(String id,String text,Integer sender, Integer recipient, String date, String time) {
+    public Message(String id,String text,Integer sender, Integer recipient, String date, String time,String amorpm,String image) {
         this.id=id;
         this.text = text;
         this.date = date;
         this.time = time;
         this.sender = sender;
         this.recipient = recipient;
+        this.amorpm=amorpm;
+        this.image=image;
     }
 
     public String getId() {
@@ -107,5 +116,21 @@ public class Message {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getAmorpm() {
+        return amorpm;
+    }
+
+    public void setAmorpm(String amorpm) {
+        this.amorpm = amorpm;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }
