@@ -98,7 +98,6 @@ public class UserAdapter extends ListAdapter<User, UserAdapter.MyViewHolder> {
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.user_query_item, viewGroup, false);
         UserAdapter.MyViewHolder myViewHolder = new UserAdapter.MyViewHolder(v, mlistener);
         return myViewHolder;
@@ -117,12 +116,17 @@ public class UserAdapter extends ListAdapter<User, UserAdapter.MyViewHolder> {
             myViewHolder.message.setEnabled(false);
         }
         if(user.getImage()!=null){
-            Glide.with(context).load(user.getImage()).into(myViewHolder.imageView);
+            Glide.with(context).load(user.getImage()).placeholder(R.drawable.loadingc).into(myViewHolder.imageView);
         }
         else {
             Glide.with(context).load(R.drawable.user_img).into(myViewHolder.imageView);
         }
 
+    }
+    //https://stackoverflow.com/questions/42646950/the-correct-way-of-implementing-getitemid-in-recyclerview-adapter
+    @Override
+    public long getItemId(int position) {
+        return getItem(position).getId();
     }
 
     public User getUserAt(int position){

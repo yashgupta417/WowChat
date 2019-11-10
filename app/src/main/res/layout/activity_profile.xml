@@ -26,7 +26,7 @@
         android:id="@+id/profile_image"
         android:layout_width="150dp"
         android:layout_height="150dp"
-
+        android:onClick="seemyDP"
         android:layout_marginTop="20dp"
         android:src="@color/colorAccent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -35,6 +35,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/p_toolbar"
         app:layout_constraintVertical_bias="0.0" />
+
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/dp_upload_gif"
+        android:visibility="invisible"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/load_b"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/p_toolbar" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
@@ -52,64 +63,71 @@
         app:srcCompat="@drawable/ic_photo_camera" />
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:orientation="vertical"
-        android:layout_marginTop="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profile_image"
         app:layout_constraintVertical_bias="0.0">
+
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardElevation="4dp">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:paddingVertical="10dp"
-            android:paddingHorizontal="10dp"
-            android:layout_height="wrap_content">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Name"/>
-            <TextView
-                android:id="@+id/profile_name"
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Yash Gupta"
-                android:textColor="#000"
-                android:textSize="20sp"
-                />
-        </LinearLayout>
+                android:orientation="vertical"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Name" />
+
+                <TextView
+                    android:id="@+id/profile_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Yash Gupta"
+                    android:textColor="#000"
+                    android:textSize="20sp" />
+            </LinearLayout>
         </androidx.cardview.widget.CardView>
+
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardElevation="4dp"
-            android:layout_marginTop="1dp">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:paddingVertical="10dp"
-            android:paddingHorizontal="10dp"
-            android:layout_height="wrap_content">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Username"/>
-            <TextView
-                android:id="@+id/profile_username"
+            android:layout_marginTop="1dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="yashgupta417"
-                android:textColor="#000"
-                android:textSize="20sp"
-                />
-        </LinearLayout>
+                android:orientation="vertical"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Username" />
+
+                <TextView
+                    android:id="@+id/profile_username"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="yashgupta417"
+                    android:textColor="#000"
+                    android:textSize="20sp" />
+            </LinearLayout>
         </androidx.cardview.widget.CardView>
         <!--
         <androidx.cardview.widget.CardView
@@ -140,22 +158,23 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardElevation="4dp"
-            android:layout_marginTop="1dp">
+            android:layout_marginTop="1dp"
+            app:cardElevation="4dp">
+
             <LinearLayout
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingVertical="20dp"
                 android:paddingHorizontal="10dp"
-                android:layout_height="wrap_content">
+                android:paddingVertical="20dp">
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:onClick="showAlertDialog"
                     android:text="LogOut"
-                    android:textSize="16sp"
                     android:textColor="#F00"
-                    />
+                    android:textSize="16sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 

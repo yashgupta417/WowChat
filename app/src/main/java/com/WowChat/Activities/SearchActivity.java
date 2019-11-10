@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.WowChat.Adapters.ShotAdapter;
@@ -39,8 +40,14 @@ public class SearchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-        //Toolbar toolbar=findViewById(R.id.s_toolbar);
-        //setSupportActionBar(toolbar);
+
+        initializeUIElements();
+
+    }
+    public void initializeUIElements(){
+        Toolbar toolbar=findViewById(R.id.search_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         load=findViewById(R.id.s_load);
         searchView=findViewById(R.id.searchView);
 
@@ -49,14 +56,16 @@ public class SearchActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         adapter=new UserAdapter(this);
         recyclerView.setAdapter(adapter);
+
+        initializeSearchView();
+    }
+    public void initializeSearchView(){
         //When we have to use diffUtil then use listadapter, as it implements some functions itself,else use recyclerView.
-
-
-
         searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 load.setVisibility(View.VISIBLE);
+                hideNoSearchFallBack();
                 searchQuery(query);
                 InputMethodManager methodManager=(InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 methodManager.hideSoftInputFromWindow(searchView.getWindowToken(),0);
@@ -65,11 +74,21 @@ public class SearchActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                if (newText.trim().isEmpty()){
+                    return false;
+                }
+                hideNoSearchFallBack();
                 load.setVisibility(View.VISIBLE);
                 searchQuery(newText);
-                return false;
+                return true;
             }
         });
+    }
+    public void hideNoSearchFallBack(){
+        LinearLayout linearLayout=findViewById(R.id.no_search_ll);
+        if(linearLayout!=null) {
+            linearLayout.setVisibility(View.GONE);
+        }
     }
     public void goBack(View view){
         finish();
@@ -86,6 +105,7 @@ public class SearchActivity extends AppCompatActivity {
                     ArrayList<User> users=new ArrayList<User>(response.body());
                     load.setVisibility(View.INVISIBLE);
                     setRecyclerView(users);
+                    checkIfNoResults(users.size());
                     return;
                 }
                 load.setVisibility(View.INVISIBLE);
@@ -99,8 +119,15 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
     }
+    public void checkIfNoResults(int size){
+        LinearLayout linearLayout = findViewById(R.id.no_result_ll);
+        if(size==0) {
+            linearLayout.setVisibility(View.VISIBLE);
+        }else {
+            linearLayout.setVisibility(View.INVISIBLE);
+        }
+    }
     public void setRecyclerView(ArrayList<User> users){
-
         adapter.submitList(users);
         adapter.setOnItemClickListener(new UserAdapter.onItemClickListener() {
             @Override

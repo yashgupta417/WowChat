@@ -15,6 +15,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -38,6 +39,7 @@ import id.zelory.compressor.Compressor;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import pl.droidsonroids.gif.GifImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -46,7 +48,50 @@ import static com.WowChat.Activities.MainActivity.viewModel;
 
 public class ProfileActivity extends AppCompatActivity {
     Uri image;
+    String imageURL;
+    public CircleImageView circleImageView;
+    public TextView name;
+    public TextView username;
+    public GifImageView load;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_profile);
+        initializeUIElements();
+        setUIValues();
+    }
+    public void initializeUIElements(){
+        Toolbar toolbar=findViewById(R.id.p_toolbar);
+        setSupportActionBar(toolbar);
+        circleImageView=findViewById(R.id.profile_image);
+        name=findViewById(R.id.profile_name);
+        username=findViewById(R.id.profile_username);
+        load=findViewById(R.id.dp_upload_gif);
+    }
 
+    public void setUIValues(){
+        SharedPreferences sharedPreferences=this.getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
+        String fName=sharedPreferences.getString("first_name","");
+        String lName=sharedPreferences.getString("last_name","");
+        String uName=sharedPreferences.getString("username","");
+        imageURL=sharedPreferences.getString("image","");
+
+        name.setText(fName+" "+lName);
+        username.setText("@"+uName);
+        if(!imageURL.equals("")){
+            Glide.with(this).load(imageURL).placeholder(R.drawable.loadingc).into(circleImageView);
+        }
+        else {
+            Glide.with(this).load(R.drawable.user_img).into(circleImageView);
+        }
+
+
+    }
+    public void seemyDP(View view){
+        Intent intent=new Intent(getApplicationContext(),ImageViewerActivity.class);
+        intent.putExtra("uri",imageURL);
+        startActivity(intent);
+    }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -71,54 +116,20 @@ public class ProfileActivity extends AppCompatActivity {
     }
     public void chooseImage(View view){
 
-        if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)!=PackageManager.PERMISSION_GRANTED){
-            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},2);
-            Log.i("me","inside if");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)!=PackageManager.PERMISSION_GRANTED){
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},2);
+                Log.i("me","inside if");
 
-        }else{
-            Log.i("me","inside else");
-            Intent intent=new Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            startActivityForResult(intent,1);
+            }else{
+                Log.i("me","inside else");
+                Intent intent=new Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent,1);
 
+            }
         }
     }
-    public CircleImageView circleImageView;
-    public TextView name;
-    public TextView username;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
-        Toolbar toolbar=findViewById(R.id.p_toolbar);
-        setSupportActionBar(toolbar);
-        circleImageView=findViewById(R.id.profile_image);
-        name=findViewById(R.id.profile_name);
-        username=findViewById(R.id.profile_username);
-
-
-        setup();
-        final SharedPreferences sharedPreferences=this.getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
-
-    }
-    public void setup(){
-        SharedPreferences sharedPreferences=this.getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
-        String fName=sharedPreferences.getString("first_name","");
-        String lName=sharedPreferences.getString("last_name","");
-        String uName=sharedPreferences.getString("username","");
-        String imageURL=sharedPreferences.getString("image","");
-
-        name.setText(fName+" "+lName);
-        username.setText("@"+uName);
-        if(!imageURL.equals("")){
-            Glide.with(this).load(imageURL).placeholder(R.drawable.user_img).into(circleImageView);
-        }
-        else {
-            Glide.with(this).load(R.drawable.user_img).into(circleImageView);
-        }
-
-
-    }
     public String getRealPathFromURI(Uri uri) {
         Cursor cursor = getContentResolver().query(uri, null, null, null, null);
         cursor.moveToFirst();
@@ -126,6 +137,7 @@ public class ProfileActivity extends AppCompatActivity {
         return cursor.getString(idx);
     }
     public void uploadPost(){
+        load.setVisibility(View.VISIBLE);
         File file = new File(getRealPathFromURI(image));
         File compressimagefile=null;
         try {
@@ -146,13 +158,14 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 if (!response.isSuccessful()) {
-                    Toast.makeText(com.WowChat.Activities.ProfileActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ProfileActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 User user=response.body();
-                SharedPreferences sharedPreferences= com.WowChat.Activities.ProfileActivity.this.getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
-                sharedPreferences.edit().putString("image",user.getImage().toString()).apply();
-                setup();
+                SharedPreferences sharedPreferences= getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
+                sharedPreferences.edit().putString("image",user.getImage()).apply();
+                load.setVisibility(View.INVISIBLE);
+                setUIValues();
 
             }
 

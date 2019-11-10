@@ -18,7 +18,7 @@ public class ImageViewerActivity extends AppCompatActivity {
         String uri=getIntent().getStringExtra("uri");
         ImageView imageView=findViewById(R.id.iv_image);
         if(uri!=null && uri.trim().length()>0) {
-            Glide.with(this).load(uri).into(imageView);
+            Glide.with(this).load(uri).placeholder(R.drawable.placeholder).into(imageView);
         }else {
             Glide.with(this).load(R.drawable.user_img).into(imageView);
         }

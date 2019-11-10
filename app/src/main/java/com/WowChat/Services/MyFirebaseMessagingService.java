@@ -62,42 +62,50 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String time=remoteMessage.getData().get("time");
         String status=remoteMessage.getData().get("status");
         String amorpm=remoteMessage.getData().get("amorpm");
-        String msgimage=remoteMessage.getData().get("image");
-        String image;
+        String msgImage=remoteMessage.getData().get("image");
+        String dp=remoteMessage.getData().get("s_image");
+        if(dp==null){
+            dp="";
+        }
         if(text==null){
-            MyRepository myRepository=new MyRepository(getApplication());
-            myRepository.updateMessageStatus(messsage_id,status);
+            updateMessageStatus(messsage_id,status);
         }else{
-            if(remoteMessage.getData().get("s_image")==null){
-                image="";
-            }else {
-                image=remoteMessage.getData().get("s_image");
+            //******** NEW MESSAGE RECEIVED**********
+            MessageTable messageTable=new MessageTable(messsage_id,text,sender_id,recipient_id,date,time,amorpm,msgImage);
+            messageTable.setStatus("Sent");
+            UserInfoTable userInfoTable=new UserInfoTable(username,firstName,lastName,email,dp,sender_id,text,time,date,amorpm);
+
+            storeMessageLocally(messageTable,userInfoTable,sender_id);
+            showNotification(firstName,text);
+            tellServerThatMessageReceived(messsage_id);
+        }
+    }
+
+    public void tellServerThatMessageReceived(String messsage_id){
+        RetrofitClient retrofitClient=new RetrofitClient();
+        Call<Message> call=retrofitClient.jsonPlaceHolderApi.updateMessageStatus(messsage_id,"Sent");
+        call.enqueue(new Callback<Message>() {
+            @Override
+            public void onResponse(Call<Message> call, Response<Message> response) {
+
             }
 
-            MessageTable messageTable=new MessageTable(messsage_id,text,sender_id,recipient_id,date,time,amorpm,msgimage);
-            messageTable.setStatus("Sent");
-            UserInfoTable userInfoTable=new UserInfoTable(username,firstName,lastName,email,image,sender_id,text,time,date,amorpm);
-            MyRepository repository=new MyRepository(this.getApplication());
-            repository.insertMessage(messageTable);
-            repository.updateOrCreateUserInfo(userInfoTable);
-            repository.setUnseenCount(sender_id);
-//            repository.incrementUnseenCount(username);
-            showNotification(firstName,text);
-            RetrofitClient retrofitClient=new RetrofitClient();
-            Call<Message> call=retrofitClient.jsonPlaceHolderApi.updateMessageStatus(messsage_id,"Sent");
-            call.enqueue(new Callback<Message>() {
-                @Override
-                public void onResponse(Call<Message> call, Response<Message> response) {
+            @Override
+            public void onFailure(Call<Message> call, Throwable t) {
 
-                }
+            }
+        });
+    }
+    public void storeMessageLocally(MessageTable messageTable,UserInfoTable userInfoTable,String sender_id){
+        MyRepository repository=new MyRepository(this.getApplication());
+        repository.insertMessage(messageTable);
+        repository.updateOrCreateUserInfo(userInfoTable);
+        repository.setUnseenCount(sender_id);
 
-                @Override
-                public void onFailure(Call<Message> call, Throwable t) {
-
-                }
-            });
-        }
-
+    }
+    public void updateMessageStatus(String messsage_id,String status){
+        MyRepository myRepository=new MyRepository(getApplication());
+        myRepository.updateMessageStatus(messsage_id,status);
     }
     public void showNotification(String title,String message){
         boolean result=shouldShowNotification(this);

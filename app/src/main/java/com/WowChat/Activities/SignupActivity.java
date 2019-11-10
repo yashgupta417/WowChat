@@ -2,6 +2,7 @@ package com.WowChat.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +10,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -21,6 +23,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
+import pl.droidsonroids.gif.GifImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -32,6 +35,8 @@ public class SignupActivity extends AppCompatActivity {
     public EditText email;
     public EditText password;
     public String pass;
+    public GifImageView load;
+    public Button signupButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -39,14 +44,19 @@ public class SignupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
+        initializeUIElements();
+    }
+    public void initializeUIElements(){
+        Toolbar toolbar=findViewById(R.id.signup_toolbar);
+        setSupportActionBar(toolbar);
         firstName=(EditText)findViewById(R.id.first_name);
         lastName=findViewById(R.id.last_name);
         username=findViewById(R.id.username);
         email=findViewById(R.id.email);
         password=findViewById(R.id.password);
-
+        load=findViewById(R.id.signup_load);
+        signupButton=findViewById(R.id.signup_button);
     }
-
     public void signUp(View view){
         String fName=firstName.getText().toString();
         String lName=lastName.getText().toString();
@@ -62,29 +72,40 @@ public class SignupActivity extends AppCompatActivity {
             Toast.makeText(this, "password must be of atleast 8 characters", Toast.LENGTH_SHORT).show();
             return;
         }
+        if(username.getText().toString().contains(" ")){
+            Toast.makeText(this, "Username can't have spaces", Toast.LENGTH_SHORT).show();
+            return;
+        }
         User user=new User(uName,eMail,fName,lName,pass);
         signUp(user);
     }
     public void signUp(User user){
+        signupButton.setEnabled(false);
+        signupButton.animate().alpha(0.5f);
+        load.setVisibility(View.VISIBLE);
         RetrofitClient retrofitClient=new RetrofitClient();
         Call<User> call=retrofitClient.jsonPlaceHolderApi.signUp(user);
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
+
                 if(!response.isSuccessful()){
                     Toast.makeText(com.WowChat.Activities.SignupActivity.this, "Something went wrong ", Toast.LENGTH_SHORT).show();
+                    load.setVisibility(View.INVISIBLE);
+                    signupButton.setEnabled(true);
+                    signupButton.animate().alpha(1f);
                     return;
                 }
                 User user=response.body();
                 Toast.makeText(com.WowChat.Activities.SignupActivity.this, "Account Created "+user.getFirstName(), Toast.LENGTH_SHORT).show();
-//                Intent intent=new Intent(getApplicationContext().getApplicationContext(),LoginActivity.class);
-//                startActivity(intent);
-//                finish();
                 login(user.getUsername(),pass);
             }
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
+                load.setVisibility(View.INVISIBLE);
+                signupButton.setEnabled(true);
+                signupButton.animate().alpha(1f);
                 Toast.makeText(com.WowChat.Activities.SignupActivity.this, "check your connection", Toast.LENGTH_SHORT).show();
 
             }
@@ -101,6 +122,9 @@ public class SignupActivity extends AppCompatActivity {
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
+                load.setVisibility(View.INVISIBLE);
+                signupButton.setEnabled(true);
+                signupButton.animate().alpha(1f);
                 if(!response.isSuccessful()){
                     Toast.makeText(com.WowChat.Activities.SignupActivity.this, response.message(), Toast.LENGTH_SHORT).show();
                     return;
@@ -123,12 +147,15 @@ public class SignupActivity extends AppCompatActivity {
                     sharedPreferences.edit().putString("image","").apply();
                 }
 
-                Toast.makeText(com.WowChat.Activities.SignupActivity.this, "Logged in successfully", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(com.WowChat.Activities.SignupActivity.this, "Logged in successfully", Toast.LENGTH_SHORT).show();
                 getAndCreateFCMTokenOnServer();
             }
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
+                load.setVisibility(View.INVISIBLE);
+                signupButton.setEnabled(true);
+                signupButton.animate().alpha(1f);
                 Toast.makeText(com.WowChat.Activities.SignupActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -154,10 +181,10 @@ public class SignupActivity extends AppCompatActivity {
                             @Override
                             public void onResponse(Call<FCMToken> call, Response<FCMToken> response) {
                                 if(!response.isSuccessful()){
-                                    Toast.makeText(com.WowChat.Activities.SignupActivity.this, "FCM Token not updated", Toast.LENGTH_SHORT).show();
+                                 //   Toast.makeText(com.WowChat.Activities.SignupActivity.this, "FCM Token not updated", Toast.LENGTH_SHORT).show();
                                     return;
                                 }
-                                Toast.makeText(com.WowChat.Activities.SignupActivity.this, "FCM token uploaded", Toast.LENGTH_SHORT).show();
+                               // Toast.makeText(com.WowChat.Activities.SignupActivity.this, "FCM token uploaded", Toast.LENGTH_SHORT).show();
                                 Intent intent=new Intent(getApplicationContext().getApplicationContext(), MainActivity.class);
                                 startActivity(intent);
                                 finish();

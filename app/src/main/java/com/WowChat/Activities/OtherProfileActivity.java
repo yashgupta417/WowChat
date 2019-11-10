@@ -23,25 +23,28 @@ public class OtherProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_other_profile);
-
-
         image=getIntent().getStringExtra("image");
         first_name=getIntent().getStringExtra("first_name");
         last_name=getIntent().getStringExtra("last_name");
         _username=getIntent().getStringExtra("username");
+        initializeUIElements();
+        setUIValues();
+    }
+    public void initializeUIElements(){
         imageView=findViewById(R.id.o_profile_image);
         name=findViewById(R.id.o_profile_name);
         username=findViewById(R.id.o_profile_username);
         Toolbar toolbar=findViewById(R.id.o_toolbar);
         toolbar.setTitle(_username);
         setSupportActionBar(toolbar);
-       // bio=findViewById(R.id.o_profile_bio);
-        setUI();
-
-
     }
-    public void setUI(){
-        Glide.with(this).load(image).placeholder(R.drawable.user_img).into(imageView);
+    public void setUIValues(){
+        if(!image.equals("")){
+            Glide.with(this).load(image).placeholder(R.drawable.loadingc).into(imageView);
+        }
+        else {
+            Glide.with(this).load(R.drawable.user_img).into(imageView);
+        }
         username.setText("@"+_username);
         name.setText(first_name+" "+last_name);
     }

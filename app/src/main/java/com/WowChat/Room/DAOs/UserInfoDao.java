@@ -20,7 +20,7 @@ public interface UserInfoDao {
     void update(UserInfoTable userInfoTable);
 
 
-    @Query("SELECT * FROM UserInfoTable ORDER BY latestMessagedate DESC,latestMessageAMorPM ASC,latestMessageTime DESC")
+    @Query("SELECT * FROM UserInfoTable")//ORDER BY latestMessagedate DESC,latestMessageAMorPM DESC,latestMessageTime DESC
     LiveData<List<UserInfoTable>> getAllChats();
 
     @Query("INSERT OR REPLACE INTO UserInfoTable(personUsername,personFirstName,personLastName,personEmail,personImage,personId,latestMesage,latestMessageTime,latestMessagedate,latestMessageAMorPM) VALUES(:personUsername,:personFirstName,:personLastName,:personEmail,:personImage,:personId,:latestMesage,:latestMessageTime,:latestMessageDate,:latestMessageAmorPm)")

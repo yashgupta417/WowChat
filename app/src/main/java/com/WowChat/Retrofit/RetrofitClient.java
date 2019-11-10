@@ -19,9 +19,9 @@ public class RetrofitClient {
         loggingInterceptor.level(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient okHttpClient=new OkHttpClient.Builder()
                 .addInterceptor(loggingInterceptor)
-                .connectTimeout(1, TimeUnit.MINUTES)
-                .writeTimeout(1, TimeUnit.MINUTES)
-                .readTimeout(1, TimeUnit.MINUTES)
+                .connectTimeout(2, TimeUnit.MINUTES)
+                .writeTimeout(3, TimeUnit.MINUTES)
+                .readTimeout(2, TimeUnit.MINUTES)
                 .build();
         retrofit=new Retrofit.Builder()
                 .baseUrl("http://yashgupta4172.pythonanywhere.com/api/")

@@ -19,8 +19,11 @@ import com.WowChat.R;
 import com.WowChat.Room.Entities.MessageTable;
 import com.bumptech.glide.Glide;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 public class MessageAdapter extends ListAdapter<MessageTable, com.WowChat.Adapters.MessageAdapter.MessageViewHolder> {
-    private com.WowChat.Adapters.MessageAdapter.onItemClickListener mlistener;
+    private onItemClickListener mlistener;
     private Context context;
     String me_id;
     public MessageAdapter(Context context) {
@@ -64,6 +67,7 @@ public class MessageAdapter extends ListAdapter<MessageTable, com.WowChat.Adapte
         LinearLayout linearLayoutFriend;
         ImageView imageMe;
         ImageView imageFriend;
+        TextView date;
 
         public MessageViewHolder(@NonNull View itemView, final com.WowChat.Adapters.MessageAdapter.onItemClickListener listener) {
             super(itemView);
@@ -77,6 +81,7 @@ public class MessageAdapter extends ListAdapter<MessageTable, com.WowChat.Adapte
             statusFriend=itemView.findViewById(R.id.message_status_friend);
             imageMe=itemView.findViewById(R.id.message_image_me);
             imageFriend=itemView.findViewById(R.id.message_image_friend);
+            date=itemView.findViewById(R.id.m_date);
             itemView.setOnClickListener(
                     new View.OnClickListener() {
                         @Override
@@ -94,29 +99,41 @@ public class MessageAdapter extends ListAdapter<MessageTable, com.WowChat.Adapte
 
     @NonNull
     @Override
-    public com.WowChat.Adapters.MessageAdapter.MessageViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public MessageViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View v;
-           v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.message_item_layout, viewGroup, false);
-
-
-         com.WowChat.Adapters.MessageAdapter.MessageViewHolder myViewHolder = new com.WowChat.Adapters.MessageAdapter.MessageViewHolder(v, mlistener);
+        v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.message_item_layout, viewGroup, false);
+        MessageViewHolder myViewHolder = new MessageViewHolder(v, mlistener);
         return myViewHolder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull com.WowChat.Adapters.MessageAdapter.MessageViewHolder myViewHolder, int i) {
+    public void onBindViewHolder(@NonNull MessageViewHolder myViewHolder, int i) {
+        if(i!=0 && getItem(i).getDateofmessaging().equals(getItem(i-1).getDateofmessaging())){
+            myViewHolder.date.setVisibility(View.GONE);
+        }else {
+            SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
+            Calendar c = Calendar.getInstance();
+            String currDate=dateformat.format(c.getTime());
 
+            String msgDate=getItem(i).getDateofmessaging();
+            if(currDate.equals(msgDate)){
+                myViewHolder.date.setText("Today");
+            }else {
+                myViewHolder.date.setText(msgDate);
+            }
+        }
         if(getItem(i).getSender().equals(me_id)){
             myViewHolder.linearLayoutFriend.setVisibility(View.GONE);
             if(getItem(i).getImageAddress()==null){
                 myViewHolder.imageMe.setVisibility(View.GONE);
             }else{
-                Glide.with(context).load(getItem(i).getImageAddress()).into(myViewHolder.imageMe);
+                Glide.with(context).load(getItem(i).getImageAddress()).placeholder(R.drawable.loadingc).into(myViewHolder.imageMe);
             }
-            if(getItem(i).getText()!=null){
-                myViewHolder.messageTextViewMe.setText(getItem(i).getText());
-            }else{
+            if(getItem(i).getText().equals("")){
                 myViewHolder.messageTextViewMe.setVisibility(View.GONE);
+
+            }else{
+                myViewHolder.messageTextViewMe.setText(getItem(i).getText());
             }
             myViewHolder.linearLayoutMe.setVisibility(View.VISIBLE);
             myViewHolder.timeMe.setText(getItem(i).getTimeofmessaging().substring(0,5)+" "+getItem(i).getAMorPM());
@@ -127,12 +144,13 @@ public class MessageAdapter extends ListAdapter<MessageTable, com.WowChat.Adapte
             if(getItem(i).getImageAddress()==null){
                 myViewHolder.imageFriend.setVisibility(View.GONE);
             }else{
-                Glide.with(context).load(getItem(i).getImageAddress()).into(myViewHolder.imageFriend);
+                Glide.with(context).load(getItem(i).getImageAddress()).placeholder(R.drawable.loadingc).into(myViewHolder.imageFriend);
             }
-            if(getItem(i).getText()!=null){
-                myViewHolder.messageTextViewFriend.setText(getItem(i).getText());
-            }else{
+            if(getItem(i).getText().equals("")){
                 myViewHolder.messageTextViewFriend.setVisibility(View.GONE);
+
+            }else{
+                myViewHolder.messageTextViewFriend.setText(getItem(i).getText());
             }
             myViewHolder.linearLayoutFriend.setVisibility(View.VISIBLE);
             myViewHolder.timeFriend.setText(getItem(i).getTimeofmessaging().substring(0,5)+" "+getItem(i).getAMorPM());

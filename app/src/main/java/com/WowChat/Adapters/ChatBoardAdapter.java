@@ -103,15 +103,16 @@ public class ChatBoardAdapter extends ListAdapter<com.WowChat.Room.Entities.User
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
         myViewHolder.nameTextView.setText(getItem(i).getPersonFirstName());
-        if(getItem(i).getLatestMesage()!=null) {
-            myViewHolder.latestMessageTextView.setText(getItem(i).getLatestMesage());
-        }else{
+        if(getItem(i).getLatestMesage()==null || getItem(i).getLatestMesage().equals("")) {
             myViewHolder.latestMessageTextView.setText("Image");
+
+        }else{
+            myViewHolder.latestMessageTextView.setText(getItem(i).getLatestMesage());
         }
 
         SimpleDateFormat timePreciseformat = new SimpleDateFormat("hh:mm:ss");
         SimpleDateFormat AMOrPMFormat=new SimpleDateFormat("a");
-        SimpleDateFormat dateformat = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
         Calendar c = Calendar.getInstance();
 
         String currDate=dateformat.format(c.getTime());
@@ -142,7 +143,7 @@ public class ChatBoardAdapter extends ListAdapter<com.WowChat.Room.Entities.User
         }
 
         if(!getItem(i).getPersonImage().equals("")){
-            Glide.with(context).load(getItem(i).getPersonImage()).placeholder(R.drawable.user_img).into(myViewHolder.circleImageView);
+            Glide.with(context).load(getItem(i).getPersonImage()).placeholder(R.drawable.loadingc).into(myViewHolder.circleImageView);
 
         }else{
             Glide.with(context).load(R.drawable.user_img).into(myViewHolder.circleImageView).onLoadFailed(context.getDrawable(R.drawable.user_img));
@@ -154,4 +155,18 @@ public class ChatBoardAdapter extends ListAdapter<com.WowChat.Room.Entities.User
         return getItem(position);
     }
 
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return  position;
+    }
+
+    @Override
+    protected UserInfoTable getItem(int position) {
+        return super.getItem(position);
+    }
 }

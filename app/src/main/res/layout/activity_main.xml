@@ -6,20 +6,22 @@
     android:layout_height="match_parent"
     tools:context=".Activities.MainActivity">
 
+
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/main_toolbar"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginBottom="8dp"
         android:background="#00BFFF"
-        app:title="WOWCHAT"
-        app:titleTextColor="#FFF"
         app:layout_constraintBottom_toBottomOf="@+id/recyclerView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintVertical_bias="0.0"
+        app:title="WOWCHAT"
+        app:titleTextColor="#FFF">
 
     </androidx.appcompat.widget.Toolbar>
 
@@ -33,4 +35,44 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_toolbar"></androidx.recyclerview.widget.RecyclerView>
+
+
+    <LinearLayout
+        android:id="@+id/nochat_ll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:orientation="vertical"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_toolbar"
+        app:layout_constraintVertical_bias="0.0">
+
+
+
+        <pl.droidsonroids.gif.GifImageView
+            android:layout_width="300dp"
+            android:layout_height="250dp"
+            android:layout_gravity="center"
+            android:src="@drawable/nochatgif" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginVertical="10dp"
+            android:background="@drawable/search_frnds_back"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="5dp"
+            android:elevation="2dp"
+            android:onClick="goToSearch"
+            android:text="Search Friends"
+            android:textSize="16sp"
+            android:textColor="#FFF" />
+
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

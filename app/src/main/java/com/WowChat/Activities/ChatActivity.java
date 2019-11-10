@@ -18,6 +18,7 @@ import android.database.Cursor;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
@@ -65,7 +66,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ChatActivity extends AppCompatActivity {
-    private com.WowChat.ViewModel.ChatActivityViewModel viewModel;
+    private ChatActivityViewModel viewModel;
     CircleImageView circleImageView;
     TextView textView;
     EditText textMessage;
@@ -83,6 +84,28 @@ public class ChatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+
+        getData();
+        initializeUIElements();
+        setUpEditTextListener();
+        seenTheUnseenMessages();
+        startLastSeenListener();
+        setUpRecyclerView();
+
+    }
+    public void getData(){
+        friendImageURL=getIntent().getStringExtra("image");
+        friendFirstName=getIntent().getStringExtra("firstName");
+        friendUsername=getIntent().getStringExtra("username");
+        friendId=Integer.parseInt(getIntent().getStringExtra("id"));
+        friendLastName=getIntent().getStringExtra("lastName");
+        friendEmail=getIntent().getStringExtra("email");
+
+        final SharedPreferences sharedPreferences=this.getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
+        meUsername=sharedPreferences.getString("username","");
+        me_id=Integer.parseInt(sharedPreferences.getString("id",""));
+    }
+    public void initializeUIElements(){
         Toolbar toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         circleImageView=findViewById(R.id.message_toolbar_image);
@@ -91,35 +114,19 @@ public class ChatActivity extends AppCompatActivity {
         textM=findViewById(R.id.text_message);
         imageM=findViewById(R.id.image_message);
         lastSeen=findViewById(R.id.last_seen);
-
-        friendImageURL=getIntent().getStringExtra("image");
-        friendFirstName=getIntent().getStringExtra("firstName");
-        friendUsername=getIntent().getStringExtra("username");
-        friendId=Integer.parseInt(getIntent().getStringExtra("id"));
-        friendLastName=getIntent().getStringExtra("lastName");
-        friendEmail=getIntent().getStringExtra("email");
-
-
         textView.setText(friendFirstName);
         if(friendImageURL.equals("")){
             Glide.with(this).load(R.drawable.user_img).into(circleImageView);
         }else{
-            Glide.with(this).load(friendImageURL).placeholder(R.drawable.user_img).into(circleImageView);
+            Glide.with(this).load(friendImageURL).placeholder(R.drawable.loadingc).into(circleImageView);
         }
-
-
-
-        final SharedPreferences sharedPreferences=this.getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
-        meUsername=sharedPreferences.getString("username","");
-        me_id=Integer.parseInt(sharedPreferences.getString("id",""));
-
-
-         recyclerView = findViewById(R.id.recyclerView2);
+        recyclerView = findViewById(R.id.recyclerView2);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
         adapter = new MessageAdapter(this);
         recyclerView.setAdapter(adapter);
-
+    }
+    public void setUpRecyclerView(){
         viewModel= ViewModelProviders.of(this).get(ChatActivityViewModel.class);
         viewModel.getMessages(Integer.toString(friendId)).observe(this, new Observer<List<MessageTable>>() {
             @Override
@@ -149,9 +156,9 @@ public class ChatActivity extends AppCompatActivity {
                 }
             }
         });
-        editTextWork();
-        seenWork();
-         handler = new Handler();
+    }
+    public void startLastSeenListener(){
+        handler = new Handler();
         final Runnable r = new Runnable() {
             public void run() {
                 getLastSeen();
@@ -159,8 +166,6 @@ public class ChatActivity extends AppCompatActivity {
             }
         };
         handler.postDelayed(r,2000);
-
-
     }
     @Override
     protected void onPause() {
@@ -174,13 +179,12 @@ public class ChatActivity extends AppCompatActivity {
         handler.removeCallbacksAndMessages(null);
     }
 
-    public void editTextWork(){
+    public void setUpEditTextListener(){
         textMessage.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
             }
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String text=s.toString();
@@ -197,14 +201,13 @@ public class ChatActivity extends AppCompatActivity {
                     textM.setVisibility(View.VISIBLE);
                 }
             }
-
             @Override
             public void afterTextChanged(Editable s) {
 
             }
         });
     }
-    public void seenWork(){
+    public void seenTheUnseenMessages(){
         viewModel.getUnseenMessages(Integer.toString(friendId)).observe(this, new Observer<List<MessageTable>>() {
             @Override
             public void onChanged(final List<MessageTable> messageTables) {
@@ -229,7 +232,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
     }
-    public void setUpListening(){
+    /*public void setUpListening(){
         final SharedPreferences sharedPreferences=this.getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
         textToSpeech=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
@@ -257,7 +260,7 @@ public class ChatActivity extends AppCompatActivity {
                 textToSpeech.speak(text,TextToSpeech.QUEUE_FLUSH, null,null);
             }
         });
-    }
+    }*/
     public void goToOtherProfile(View view){
         Intent intent=new Intent(getApplicationContext(),OtherProfileActivity.class);
         intent.putExtra("image",friendImageURL);
@@ -266,15 +269,10 @@ public class ChatActivity extends AppCompatActivity {
         intent.putExtra("username",friendUsername);
         startActivity(intent);
     }
-    public void onClickShot(View view){
-        Intent intent=new Intent(getApplicationContext(), ShotsActivity.class);
-        intent.putExtra("me_id",Integer.toString(me_id));
-        intent.putExtra("friend_id",Integer.toString(friendId));
-        startActivity(intent);
-    }
+
     public void onClickSendButton(View view){
 
-        sendWork(textMessage.getText().toString());
+        sendTextMessage(textMessage.getText().toString());
         textMessage.setText("");
     }
     public void getLastSeen(){
@@ -324,10 +322,10 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
     }
-    public void onClickHeart(View view){
+   /* public void onClickHeart(View view){
         sendWork("\uD83D\uDC4B");
-    }
-    public void sendWork(String text){
+    }*/
+    public void sendTextMessage(String text){
         //https://stackoverflow.com/questions/5369682/get-current-time-and-date-on-android , 2nd or 3rd answer
         Message message=settingUpMessage(text,null);
         RetrofitClient retrofitClient=new RetrofitClient();
@@ -352,10 +350,9 @@ public class ChatActivity extends AppCompatActivity {
 
     public Message settingUpMessage(String text,Uri uri){
         Calendar c = Calendar.getInstance();
-        SimpleDateFormat timeformat = new SimpleDateFormat("HH:mm");
         SimpleDateFormat timePreciseformat = new SimpleDateFormat("hh:mm:ss");
         SimpleDateFormat AMOrPMFormat=new SimpleDateFormat("a");
-        SimpleDateFormat dateformat = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
 
         //String time = timeformat.format(c.getTime());
         String timePrecise=timePreciseformat.format(c.getTime());
@@ -427,12 +424,14 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
     public void sendImageMessage(View view){
-        if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)!=PackageManager.PERMISSION_GRANTED){
-            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},2);
-        }else{
-            Intent intent=new Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            startActivityForResult(intent,1);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)!=PackageManager.PERMISSION_GRANTED){
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},2);
+            }else{
+                Intent intent=new Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent,1);
 
+            }
         }
     }
     public String getRealPathFromURI(Uri uri) {
@@ -443,7 +442,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     public void sendImageMessage(Uri image) {
-        Message message = settingUpMessage(null,image);
+        Message message = settingUpMessage("",image);
         File file = new File(getRealPathFromURI(image));
         File compressimagefile = null;
         try {
@@ -474,7 +473,6 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Message> call, Response<Message> response) {
                 if(response.isSuccessful()){
-                    Toast.makeText(ChatActivity.this, "sent", Toast.LENGTH_SHORT).show();
                     Message msg=response.body();
                     postSendingMessageWork(msg);
                     return;

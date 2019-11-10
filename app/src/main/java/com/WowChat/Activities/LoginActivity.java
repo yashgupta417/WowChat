@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -23,6 +24,7 @@ import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.UUID;
 
+import pl.droidsonroids.gif.GifImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -31,10 +33,16 @@ public class LoginActivity extends AppCompatActivity {
 
     public EditText username;
     public EditText password;
+    public Button loginButton;
+    public GifImageView load;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        checkIfAlreadyLoggedIn();
+        initializeUIElements();
+    }
+    public void checkIfAlreadyLoggedIn(){
         SharedPreferences sharedPreferences=this.getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
         String token=sharedPreferences.getString("token",null);
         if(token!=null){
@@ -42,7 +50,10 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
-
+    }
+    public void initializeUIElements(){
+        loginButton=findViewById(R.id.login_button);
+        load=findViewById(R.id.login_load);
         username=findViewById(R.id.username_login);
         password=findViewById(R.id.password_login);
     }
@@ -58,6 +69,9 @@ public class LoginActivity extends AppCompatActivity {
 
     }
     public void login(String username, String password){
+        load.setVisibility(View.VISIBLE);
+        loginButton.setEnabled(false);
+        loginButton.animate().alpha(0.5f);
         RetrofitClient retrofitClient=new RetrofitClient();
 
        final SharedPreferences sharedPreferences=this.getSharedPreferences(getPackageName(),Context.MODE_PRIVATE);
@@ -66,8 +80,12 @@ public class LoginActivity extends AppCompatActivity {
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
+                load.setVisibility(View.INVISIBLE);
+                loginButton.setEnabled(true);
+                loginButton.animate().alpha(1f);
                 if(!response.isSuccessful()){
-                    Toast.makeText(com.WowChat.Activities.LoginActivity.this, response.message(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(com.WowChat.Activities.LoginActivity.this,"Invalid Details", Toast.LENGTH_SHORT).show();
+
                     return;
                 }
                 User loggedInUser=response.body();
@@ -95,7 +113,10 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
-                Toast.makeText(com.WowChat.Activities.LoginActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                load.setVisibility(View.INVISIBLE);
+                loginButton.setEnabled(true);
+                loginButton.animate().alpha(1f);
+                Toast.makeText(com.WowChat.Activities.LoginActivity.this,"Something went wrong", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -111,7 +132,7 @@ public class LoginActivity extends AppCompatActivity {
                         }
 
                         String token = task.getResult().getToken();
-                        SharedPreferences sharedPreferences= com.WowChat.Activities.LoginActivity.this.getSharedPreferences(getPackageName(),Context.MODE_PRIVATE);
+                        SharedPreferences sharedPreferences= getSharedPreferences(getPackageName(),Context.MODE_PRIVATE);
                         String user_id=sharedPreferences.getString("id","");
                         FCMToken fcmToken=new FCMToken(token,"FCM",user_id);
                         RetrofitClient retrofitClient=new RetrofitClient();
@@ -131,7 +152,7 @@ public class LoginActivity extends AppCompatActivity {
 
                             @Override
                             public void onFailure(Call<FCMToken> call, Throwable t) {
-                                Toast.makeText(com.WowChat.Activities.LoginActivity.this, t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(com.WowChat.Activities.LoginActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
