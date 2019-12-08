@@ -39,9 +39,7 @@ public class MyRepository {
         return userInfoDao.getAllChats();
 
     }
-//    public int countUnseenMessages(String username){
-//        return messageDao.countUnseenMessages(username);
-//    }
+
     public void updateOrCreateUserInfo(UserInfoTable userInfoTable){
         new UpdateOrCreateUserInfoAsyncTask(userInfoDao).execute(userInfoTable);
 

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,7 +26,7 @@ import java.util.Calendar;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class ChatBoardAdapter extends ListAdapter<com.WowChat.Room.Entities.UserInfoTable, ChatBoardAdapter.MyViewHolder> {
+public class ChatBoardAdapter extends ListAdapter<UserInfoTable, ChatBoardAdapter.MyViewHolder> {
 
     private onItemClickListener mlistener;
     private Context context;
@@ -62,18 +63,22 @@ public class ChatBoardAdapter extends ListAdapter<com.WowChat.Room.Entities.User
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         TextView nameTextView;
+        TextView lastNameTextView;
         TextView latestMessageTextView;
         CircleImageView circleImageView;
         TextView timeTextView;
         TextView unseenCountTextview;
+        ConstraintLayout parent;
 
         public MyViewHolder(@NonNull View itemView, final onItemClickListener listener) {
             super(itemView);
+            parent=itemView.findViewById(R.id.chatitem_parent);
             nameTextView = itemView.findViewById(R.id.chat_name);
             latestMessageTextView = itemView.findViewById(R.id.chat_latestMessage);
             circleImageView = itemView.findViewById(R.id.chat_image);
             timeTextView=itemView.findViewById(R.id.chat_time);
             unseenCountTextview=itemView.findViewById(R.id.chat_unseen_msg_count);
+            lastNameTextView=itemView.findViewById(R.id.last_name);
 
             itemView.setOnClickListener(
                     new View.OnClickListener() {
@@ -103,6 +108,7 @@ public class ChatBoardAdapter extends ListAdapter<com.WowChat.Room.Entities.User
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
         myViewHolder.nameTextView.setText(getItem(i).getPersonFirstName());
+        myViewHolder.lastNameTextView.setText(getItem(i).getPersonLastName());
         if(getItem(i).getLatestMesage()==null || getItem(i).getLatestMesage().equals("")) {
             myViewHolder.latestMessageTextView.setText("Image");
 
@@ -122,7 +128,7 @@ public class ChatBoardAdapter extends ListAdapter<com.WowChat.Room.Entities.User
             String t=getItem(i).getLatestMessageTime();
             String amorpm=getItem(i).getLatestMessageAMorPM();
             Log.i("%%%",t.substring(0,5)+ amorpm);
-            myViewHolder.timeTextView.setText(t.substring(0,5)+ " "+amorpm);
+            myViewHolder.timeTextView.setText(t.substring(0,5)+ " "+amorpm.toLowerCase());
         }else{
             Log.i("%%%",getItem(i).getLatestMessagedate());
             myViewHolder.timeTextView.setText(getItem(i).getLatestMessagedate());
@@ -132,11 +138,13 @@ public class ChatBoardAdapter extends ListAdapter<com.WowChat.Room.Entities.User
 
         Integer unseenCount=getItem(i).getUnseenMessageCount();
         if(unseenCount==null || unseenCount==0){
+            //myViewHolder.parent.setBackgroundColor(Color.parseColor("#FFFFFF"));
             myViewHolder.unseenCountTextview.setVisibility(View.INVISIBLE);
             myViewHolder.unseenCountTextview.setText("0");
             myViewHolder.timeTextView.setTextColor(Color.GRAY);
 
         }else{
+            //myViewHolder.parent.setBackgroundColor(Color.parseColor("#1100BFFF"));
             myViewHolder.timeTextView.setTextColor(Color.parseColor("#00BFFF"));
             myViewHolder.unseenCountTextview.setVisibility(View.VISIBLE);
             myViewHolder.unseenCountTextview.setText(Integer.toString(unseenCount));

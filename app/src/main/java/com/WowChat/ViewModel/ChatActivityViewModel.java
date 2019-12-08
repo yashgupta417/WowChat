@@ -16,7 +16,7 @@ import java.util.Calendar;
 import java.util.List;
 
 public class ChatActivityViewModel extends AndroidViewModel {
-    private com.WowChat.Repository.MyRepository myRepository;
+    private MyRepository myRepository;
 
     public ChatActivityViewModel(@NonNull Application application) {
         super(application);

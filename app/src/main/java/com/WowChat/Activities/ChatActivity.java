@@ -15,20 +15,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.media.AudioAttributes;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.speech.tts.TextToSpeech;
-import android.speech.tts.Voice;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -38,7 +33,6 @@ import com.WowChat.Adapters.MessageAdapter;
 import com.WowChat.Repository.MyRepository;
 import com.WowChat.Retrofit.Message;
 import com.WowChat.Retrofit.RetrofitClient;
-import com.WowChat.Retrofit.Shot_Write;
 import com.WowChat.Retrofit.User;
 import com.WowChat.Room.Entities.MessageTable;
 import com.WowChat.Room.Entities.UserInfoTable;
@@ -53,7 +47,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -88,9 +81,10 @@ public class ChatActivity extends AppCompatActivity {
         getData();
         initializeUIElements();
         setUpEditTextListener();
+        setUpRecyclerView();
         seenTheUnseenMessages();
         startLastSeenListener();
-        setUpRecyclerView();
+
 
     }
     public void getData(){
@@ -222,7 +216,6 @@ public class ChatActivity extends AppCompatActivity {
                        public void onResponse(Call<Message> call, Response<Message> response) {
 
                        }
-
                        @Override
                        public void onFailure(Call<Message> call, Throwable t) {
 

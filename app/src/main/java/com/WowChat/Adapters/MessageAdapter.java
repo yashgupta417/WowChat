@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -71,6 +72,7 @@ public class MessageAdapter extends ListAdapter<MessageTable, com.WowChat.Adapte
 
         public MessageViewHolder(@NonNull View itemView, final com.WowChat.Adapters.MessageAdapter.onItemClickListener listener) {
             super(itemView);
+
             messageTextViewMe = itemView.findViewById(R.id.message_textView_me);
             messageTextViewFriend=itemView.findViewById(R.id.message_textView_friend);
             linearLayoutMe=itemView.findViewById(R.id.message_ll_me);
@@ -136,7 +138,7 @@ public class MessageAdapter extends ListAdapter<MessageTable, com.WowChat.Adapte
                 myViewHolder.messageTextViewMe.setText(getItem(i).getText());
             }
             myViewHolder.linearLayoutMe.setVisibility(View.VISIBLE);
-            myViewHolder.timeMe.setText(getItem(i).getTimeofmessaging().substring(0,5)+" "+getItem(i).getAMorPM());
+            myViewHolder.timeMe.setText(getItem(i).getTimeofmessaging().substring(0,5)+" "+getItem(i).getAMorPM().toLowerCase());
             myViewHolder.statusMe.setText(" "+getItem(i).getStatus());
         }
         else{
@@ -153,7 +155,7 @@ public class MessageAdapter extends ListAdapter<MessageTable, com.WowChat.Adapte
                 myViewHolder.messageTextViewFriend.setText(getItem(i).getText());
             }
             myViewHolder.linearLayoutFriend.setVisibility(View.VISIBLE);
-            myViewHolder.timeFriend.setText(getItem(i).getTimeofmessaging().substring(0,5)+" "+getItem(i).getAMorPM());
+            myViewHolder.timeFriend.setText(getItem(i).getTimeofmessaging().substring(0,5)+" "+getItem(i).getAMorPM().toLowerCase());
         }
 
     }

@@ -18,7 +18,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.WowChat.Retrofit.RetrofitClient;
-import com.WowChat.Retrofit.Shot_Write;
 import com.bumptech.glide.Glide;
 
 import java.io.File;

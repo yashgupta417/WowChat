@@ -49,17 +49,6 @@ public interface JsonPlaceHolderApi {
     @PATCH("update_fcm_token/")
     Call<FCMToken> updateFCMToken(@Query("registration_id") String registration_id, @Query("user") String user);
 
-    @GET("shot_list/")
-    Call<List<Shot>> getShots(@Query("id_me") String id_me, @Query("id_friend") String id_friend);
-
-    @Multipart
-    @POST("shot_list/")
-    Call<Shot_Write> uploadShot(@Part("title") RequestBody title,
-                                @Part("text") RequestBody text,
-                                @Part("by") RequestBody by,
-                                @Part("to") RequestBody to,
-                                @Part MultipartBody.Part image);
-
     @Multipart
     @POST("message_list/")
     Call<Message> sendImageMessage(@Part("id") RequestBody id,
@@ -76,4 +65,13 @@ public interface JsonPlaceHolderApi {
 
     @GET("user_list/")
     Call<List<User>> queryUsers(@Query("query") String q);
+
+    @POST("group_list/")
+    Call<GroupWrite> createGroup(@Body GroupWrite groupWrite);
+
+    @POST("add_member/")
+    Call<String> addMember(@Query("user_id") String userId,@Query("group_id") String groupId);
+
+    @POST("send_group_message/")
+    Call<GroupMessage> sendGroupMessage(@Body GroupMessage message);
 }

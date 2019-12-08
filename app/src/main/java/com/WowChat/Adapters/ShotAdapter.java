@@ -8,17 +8,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.WowChat.Retrofit.Shot;
 import com.WowChat.Retrofit.User;
 import com.bumptech.glide.Glide;
 import com.WowChat.R;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 

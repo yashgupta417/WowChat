@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
                 String time1=o1.getLatestMessagedate()+" "+o1.getLatestMessageTime()+" "+o1.getLatestMessageAMorPM();
                 String time2=o2.getLatestMessagedate()+" "+o2.getLatestMessageTime()+" "+o2.getLatestMessageAMorPM();
                 try {
-                    return dateFormat.parse(time2).compareTo(dateFormat.parse(time1));
+                    return dateFormat.parse(time2.toLowerCase()).compareTo(dateFormat.parse(time1.toLowerCase()));
                 } catch (ParseException e) {
                     e.printStackTrace();
                     Log.i("%%%%%%",e.getLocalizedMessage());
@@ -142,5 +142,9 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void goToGroups(View view) {
+        Intent intent=new Intent(getApplicationContext(),GroupActivity.class);
+        startActivity(intent);
+    }
 
 }

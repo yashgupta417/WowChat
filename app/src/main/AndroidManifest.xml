@@ -11,7 +11,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Activities.ImageViewerActivity"></activity>
+        <activity android:name=".Activities.NewGroupActivity"></activity>
+        <activity
+            android:name=".Activities.GroupChatActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.GroupActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".Activities.ImageViewerActivity" />
         <activity
             android:name=".Activities.SplashActivity"
             android:theme="@style/AppTheme">
@@ -23,11 +30,17 @@
         </activity>
         <activity android:name=".Activities.OtherProfileActivity" />
         <activity android:name=".Activities.ProfileActivity" />
-        <activity android:name=".Activities.SearchActivity"  />
-        <activity android:name=".Activities.ChatActivity"  android:windowSoftInputMode="adjustResize|stateHidden"/>
-        <activity android:name=".Activities.LoginActivity"></activity>
+        <activity android:name=".Activities.SearchActivity" />
+        <activity
+            android:name=".Activities.ChatActivity"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity android:name=".Activities.LoginActivity" />
         <activity android:name=".Activities.SignupActivity" />
         <activity android:name=".Activities.MainActivity" />
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
 
         <service
             android:name=".Services.MyFirebaseMessagingService"
@@ -37,8 +50,8 @@
             </intent-filter>
         </service>
     </application>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
 </manifest>
