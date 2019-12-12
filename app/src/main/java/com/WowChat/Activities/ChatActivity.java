@@ -70,7 +70,6 @@ public class ChatActivity extends AppCompatActivity {
     ImageView textM,imageM;
     public static RecyclerView recyclerView;
     MessageAdapter adapter;
-    TextToSpeech textToSpeech;
     TextView lastSeen;
     Handler handler;
     @Override
@@ -117,7 +116,7 @@ public class ChatActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView2);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
-        adapter = new MessageAdapter(this);
+        adapter = new MessageAdapter(this,friendFirstName,friendImageURL);
         recyclerView.setAdapter(adapter);
     }
     public void setUpRecyclerView(){
@@ -225,35 +224,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
     }
-    /*public void setUpListening(){
-        final SharedPreferences sharedPreferences=this.getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
-        textToSpeech=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if(status == TextToSpeech.SUCCESS) {
-                    textToSpeech.setLanguage(Locale.US);
-                    float speed= (float) (sharedPreferences.getInt("speed",50)/50.00);
-                    float pitch= (float) (sharedPreferences.getInt("pitch",50)/50.00);
-                    Log.i("####speed1:",  String.valueOf(speed));
-                    Log.i("####pitch1:",  String.valueOf(pitch));
-                    if (speed<0.01) speed=0.01f;
-                    if (pitch<0.01) pitch=0.01f;
-                    Log.i("####speed2:",  String.valueOf(speed));
-                    Log.i("####pitch2:",  String.valueOf(pitch));
-                    textToSpeech.setSpeechRate(speed);
-                    textToSpeech.setPitch(pitch);
 
-                }
-            }
-        });
-        adapter.setOnItemClickListener(new MessageAdapter.onItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                String text=adapter.getMessageTableAt(position).getText();
-                textToSpeech.speak(text,TextToSpeech.QUEUE_FLUSH, null,null);
-            }
-        });
-    }*/
     public void goToOtherProfile(View view){
         Intent intent=new Intent(getApplicationContext(),OtherProfileActivity.class);
         intent.putExtra("image",friendImageURL);
@@ -346,7 +317,6 @@ public class ChatActivity extends AppCompatActivity {
         SimpleDateFormat timePreciseformat = new SimpleDateFormat("hh:mm:ss");
         SimpleDateFormat AMOrPMFormat=new SimpleDateFormat("a");
         SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
-
         //String time = timeformat.format(c.getTime());
         String timePrecise=timePreciseformat.format(c.getTime());
         String date=dateformat.format(c.getTime());
@@ -354,25 +324,16 @@ public class ChatActivity extends AppCompatActivity {
         String id=UUID.randomUUID()+date+timePrecise;
         Message message=new Message(id,text,me_id,friendId,date,timePrecise,amorpm,null);
 
-        UserInfoTable userInfoTable=new UserInfoTable(friendUsername,
-                friendFirstName,
-                friendLastName,
-                friendEmail,
-                friendImageURL,
-                Integer.toString(friendId),
-                text,
-                timePrecise,
-                date,
-                amorpm);
-
+        UserInfoTable userInfoTable=new UserInfoTable(friendUsername, friendFirstName, friendLastName, friendEmail, friendImageURL,
+                Integer.toString(friendId), text, timePrecise, date, amorpm);
         viewModel.updateOrCreateUserInfo(userInfoTable);
 
-        final MessageTable messageTable=new MessageTable(id,text,Integer.toString(me_id),Integer.toString(friendId),date,timePrecise,amorpm,null);
+        final MessageTable messageTable=new MessageTable(id,text,Integer.toString(me_id)
+                ,Integer.toString(friendId),date,timePrecise,amorpm,null);
         if(uri!=null){
             messageTable.setImageAddress(uri.toString());
         }
         viewModel.insertMessage(messageTable);
-
         return  message;
     }
     public void postSendingMessageWork(Message rMessage){
@@ -395,7 +356,17 @@ public class ChatActivity extends AppCompatActivity {
 
 
     Uri image;
+    public void sendImageMessage(View view){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)!=PackageManager.PERMISSION_GRANTED){
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},2);
+            }else{
+                Intent intent=new Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent,1);
 
+            }
+        }
+    }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -416,17 +387,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         }
     }
-    public void sendImageMessage(View view){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)!=PackageManager.PERMISSION_GRANTED){
-                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},2);
-            }else{
-                Intent intent=new Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent,1);
 
-            }
-        }
-    }
     public String getRealPathFromURI(Uri uri) {
         Cursor cursor = getContentResolver().query(uri, null, null, null, null);
         cursor.moveToFirst();
@@ -449,16 +410,11 @@ public class ChatActivity extends AppCompatActivity {
         MultipartBody.Part imagePart = MultipartBody.Part.createFormData("image", file.getName(), requestBody);
         RequestBody idPart = RequestBody.create(message.getId(), MediaType.parse("multipart/form-data"));
         RequestBody textPart = RequestBody.create("", MediaType.parse("multipart/form-data"));
-
         RequestBody senderPart = RequestBody.create(Integer.toString(message.getSender()), MediaType.parse("multipart/form-data"));
         RequestBody recipientPart = RequestBody.create(Integer.toString(message.getRecipient()), MediaType.parse("multipart/form-data"));
-
         RequestBody datePart = RequestBody.create(message.getDate(), MediaType.parse("multipart/form-data"));
         RequestBody timePart = RequestBody.create(message.getTime(), MediaType.parse("multipart/form-data"));
-
         RequestBody amorpmPart = RequestBody.create(message.getAmorpm(), MediaType.parse("multipart/form-data"));
-
-
         RetrofitClient retrofitClient = new RetrofitClient();
 
         Call<Message> call = retrofitClient.jsonPlaceHolderApi.sendImageMessage(idPart, textPart, senderPart, recipientPart, datePart, timePart, amorpmPart, imagePart);

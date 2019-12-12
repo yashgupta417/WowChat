@@ -23,13 +23,18 @@ import com.bumptech.glide.Glide;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class MessageAdapter extends ListAdapter<MessageTable, com.WowChat.Adapters.MessageAdapter.MessageViewHolder> {
     private onItemClickListener mlistener;
     private Context context;
+    private String friendImage,friendName;
     String me_id;
-    public MessageAdapter(Context context) {
+    public MessageAdapter(Context context,String friendName,String friendImage) {
         super(DIFF_CALLBACK);
         this.context=context;
+        this.friendImage=friendImage;
+        this.friendName=friendName;
         setHasStableIds(true);
         SharedPreferences sharedPreferences=context.getSharedPreferences(context.getPackageName(),Context.MODE_PRIVATE);
         me_id=sharedPreferences.getString("id","");
@@ -69,6 +74,7 @@ public class MessageAdapter extends ListAdapter<MessageTable, com.WowChat.Adapte
         ImageView imageMe;
         ImageView imageFriend;
         TextView date;
+        CircleImageView friendDp;
 
         public MessageViewHolder(@NonNull View itemView, final com.WowChat.Adapters.MessageAdapter.onItemClickListener listener) {
             super(itemView);
@@ -84,6 +90,7 @@ public class MessageAdapter extends ListAdapter<MessageTable, com.WowChat.Adapte
             imageMe=itemView.findViewById(R.id.message_image_me);
             imageFriend=itemView.findViewById(R.id.message_image_friend);
             date=itemView.findViewById(R.id.m_date);
+            friendDp=itemView.findViewById(R.id.friend_dp_imageview);
             itemView.setOnClickListener(
                     new View.OnClickListener() {
                         @Override
@@ -126,6 +133,7 @@ public class MessageAdapter extends ListAdapter<MessageTable, com.WowChat.Adapte
         }
         if(getItem(i).getSender().equals(me_id)){
             myViewHolder.linearLayoutFriend.setVisibility(View.GONE);
+            myViewHolder.friendDp.setVisibility(View.GONE);
             if(getItem(i).getImageAddress()==null){
                 myViewHolder.imageMe.setVisibility(View.GONE);
             }else{
@@ -143,6 +151,15 @@ public class MessageAdapter extends ListAdapter<MessageTable, com.WowChat.Adapte
         }
         else{
             myViewHolder.linearLayoutMe.setVisibility(View.GONE);
+            if(i==0 || !getItem(i).getSender().equals(getItem(i-1).getSender())){
+                myViewHolder.friendDp.setVisibility(View.VISIBLE);
+                if(friendImage!=null){
+                    Glide.with(context).load(friendImage).placeholder(R.drawable.user_img).into(myViewHolder.friendDp);
+                }
+            }else {
+                myViewHolder.friendDp.setVisibility(View.INVISIBLE);
+            }
+
             if(getItem(i).getImageAddress()==null){
                 myViewHolder.imageFriend.setVisibility(View.GONE);
             }else{

@@ -11,10 +11,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Activities.NewGroupActivity"></activity>
+        <activity android:name=".Activities.GalleryActivity"></activity>
+        <activity android:name=".Activities.WallActivity" />
+        <activity android:name=".Activities.NewGroupActivity" />
         <activity
             android:name=".Activities.GroupChatActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name=".Activities.GroupActivity"
             android:screenOrientation="portrait" />

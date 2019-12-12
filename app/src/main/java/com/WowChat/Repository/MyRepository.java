@@ -1,5 +1,6 @@
 package com.WowChat.Repository;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -8,6 +9,7 @@ import android.util.Log;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.room.Update;
 
 import com.WowChat.Room.DAOs.UserInfoDao;
@@ -16,7 +18,9 @@ import com.WowChat.Room.Entities.MessageTable;
 import com.WowChat.Room.Entities.UserInfoTable;
 import com.WowChat.Room.MyDatabase;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class MyRepository {
     private UserInfoDao userInfoDao;
@@ -34,11 +38,28 @@ public class MyRepository {
     public LiveData<List<MessageTable>> getUnseenMessages(String friend){
         return messageDao.getUnseenMessages(friend,"Sent");
     }
-    public LiveData<List<UserInfoTable>> getAllChats()
-    {
+    public LiveData<List<UserInfoTable>> getAllChats() {
         return userInfoDao.getAllChats();
 
     }
+
+    @SuppressLint("StaticFieldLeak")
+    public List<UserInfoTable> getAllFriends(){
+        try {
+            return new AsyncTask<Void,Void,List<UserInfoTable>>(){
+                @Override
+                protected List<UserInfoTable> doInBackground(Void... voids) {
+                    return userInfoDao.getAllFriends();
+                }
+            }.execute().get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return  null;
+    }
+
 
     public void updateOrCreateUserInfo(UserInfoTable userInfoTable){
         new UpdateOrCreateUserInfoAsyncTask(userInfoDao).execute(userInfoTable);

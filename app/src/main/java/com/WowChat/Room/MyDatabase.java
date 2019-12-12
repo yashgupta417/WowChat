@@ -18,7 +18,7 @@ import com.WowChat.Room.Entities.GroupTable;
 import com.WowChat.Room.Entities.MessageTable;
 import com.WowChat.Room.Entities.UserInfoTable;
 
-@Database(entities = {UserInfoTable.class, MessageTable.class, GroupTable.class, GroupMessageTable.class},version=24,exportSchema = false)
+@Database(entities = {UserInfoTable.class, MessageTable.class, GroupTable.class, GroupMessageTable.class},version=25,exportSchema = false)
 public abstract class MyDatabase extends RoomDatabase {
     private static MyDatabase instance;
     public abstract UserInfoDao chatDao();
@@ -33,11 +33,18 @@ public abstract class MyDatabase extends RoomDatabase {
                     ", group_id TEXT , dateofmessaging TEXT ,timeofmessaging TEXT , AMorPM TEXT ,status TEXT, PRIMARY KEY(id))");
         }
     };
+    static  final Migration MIGRATION__24_25=new Migration(24,25) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE GroupMessageTable" +
+                    " ADD event TEXT DEFAULT('')");
+        }
+    };
     public static synchronized MyDatabase getInstance(Context context){
         if(instance==null){
             instance= Room.databaseBuilder(context.getApplicationContext(),
                         MyDatabase.class,"my_database")
-                    .addMigrations(MIGRATION_22_24)
+                    .addMigrations(MIGRATION_22_24,MIGRATION__24_25)
                     .build();
         }
         return instance;

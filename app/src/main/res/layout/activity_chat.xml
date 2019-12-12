@@ -4,15 +4,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/chat_background"
     tools:context=".Activities.ChatActivity">
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="#AADCDCDC"
+        android:alpha="1"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:background="#00BFFF"
-        android:elevation="2dp"
+        android:elevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -24,19 +35,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:layout_editor_absoluteX="16dp">
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/message_toolbar_image"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:onClick="goToOtherProfile"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/message_toolbar_name"
@@ -87,83 +85,106 @@
                 app:layout_constraintTop_toBottomOf="@+id/message_toolbar_name"
                 app:layout_constraintVertical_bias="1.0" />
 
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/message_toolbar_image"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:onClick="goToOtherProfile"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     </androidx.appcompat.widget.Toolbar>
 
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="5dp"
-        app:layout_constraintBottom_toTopOf="@+id/textMessage"
+        app:layout_constraintBottom_toTopOf="@+id/chat_mini_parent_2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
-    <EditText
-        android:id="@+id/textMessage"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/chat_mini_parent_2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="60dp"
-        android:layout_marginBottom="5dp"
-        android:background="@drawable/msg_write_back"
-        android:elevation="1dp"
-        android:ems="10"
-        android:gravity="start|top"
-        android:hint="type here...."
-        android:inputType="textMultiLine"
-        android:maxHeight="150dp"
-        android:paddingHorizontal="20dp"
-        android:paddingVertical="8dp"
-        android:paddingLeft="5dp"
-        android:scrollbars="vertical"
-        android:textSize="18sp"
+        android:elevation="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"></EditText>
+        app:layout_constraintVertical_bias="1.0">
+
+        <EditText
+            android:id="@+id/textMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="60dp"
+            android:layout_marginVertical="7dp"
+            android:background="@drawable/msg_write_back"
+            android:elevation="1dp"
+            android:ems="10"
+            android:gravity="start|top"
+            android:hint="type here...."
+            android:inputType="textMultiLine"
+            android:maxHeight="150dp"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="8dp"
+            android:paddingLeft="5dp"
+            android:scrollbars="vertical"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0"></EditText>
 
 
-    <ImageView
-        android:id="@+id/image_message"
-        android:layout_width="42dp"
-        android:layout_height="42dp"
-        android:layout_marginBottom="5dp"
-        android:background="@drawable/message_back_sender"
-        android:elevation="2dp"
-        android:onClick="sendImageMessage"
-        android:padding="10dp"
-        android:src="@drawable/ic_photo_camera"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textMessage"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        <ImageView
+            android:id="@+id/image_message"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:background="@drawable/message_back_sender"
+            android:elevation="2dp"
+            android:onClick="sendImageMessage"
+            android:padding="10dp"
+            android:src="@drawable/ic_photo_camera"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textMessage"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
+        <ImageView
 
-        android:id="@+id/text_message"
-        android:layout_width="42dp"
-        android:layout_height="42dp"
-        android:layout_marginBottom="5dp"
-        android:background="@drawable/message_back_sender"
-        android:clickable="false"
-        android:elevation="2dp"
-        android:onClick="onClickSendButton"
-        android:paddingVertical="11dp"
-        android:paddingLeft="5dp"
-        android:src="@drawable/ic_send_"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textMessage"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+            android:id="@+id/text_message"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:background="@drawable/message_back_sender"
+            android:clickable="false"
+            android:elevation="2dp"
+            android:onClick="onClickSendButton"
+            android:paddingVertical="11dp"
+            android:paddingLeft="5dp"
+            android:src="@drawable/ic_send_"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textMessage"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

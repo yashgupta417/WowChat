@@ -70,8 +70,23 @@ public interface JsonPlaceHolderApi {
     Call<GroupWrite> createGroup(@Body GroupWrite groupWrite);
 
     @POST("add_member/")
-    Call<String> addMember(@Query("user_id") String userId,@Query("group_id") String groupId);
+    Call<User> addMember(@Query("user_id") String userId,@Query("group_id") String groupId);
 
     @POST("send_group_message/")
     Call<GroupMessage> sendGroupMessage(@Body GroupMessage message);
+
+    @GET("group_detail/{group_id}")
+    Call<GroupRead> getGroupDetails(@Path("group_id") String group_id);
+
+    @Multipart
+    @POST("send_group_message/")
+    Call<GroupMessage> sendGroupImageMessage(@Part("id") RequestBody id,
+                                   @Part("text") RequestBody text,
+                                   @Part("sender") RequestBody sender,
+                                   @Part("group") RequestBody group,
+                                   @Part("date") RequestBody date,
+                                   @Part("time") RequestBody time,
+                                   @Part("amorpm") RequestBody amorpm,
+                                   @Part MultipartBody.Part image);
+
 }

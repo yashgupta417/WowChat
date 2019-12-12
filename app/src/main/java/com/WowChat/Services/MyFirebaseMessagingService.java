@@ -19,10 +19,14 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.lifecycle.Observer;
 
 import com.WowChat.Activities.MainActivity;
+import com.WowChat.Repository.GroupRepository;
 import com.WowChat.Repository.MyRepository;
 import com.WowChat.Retrofit.FCMToken;
+import com.WowChat.Retrofit.GroupMessage;
 import com.WowChat.Retrofit.Message;
 import com.WowChat.Retrofit.RetrofitClient;
+import com.WowChat.Room.Entities.GroupMessageTable;
+import com.WowChat.Room.Entities.GroupTable;
 import com.WowChat.Room.Entities.MessageTable;
 import com.WowChat.Room.Entities.UserInfoTable;
 import com.WowChat.R;
@@ -45,11 +49,25 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         updateFCMTokenOnServer(s);
 
     }
-
+    private static final int PRIAVTE_MESSAGE  = 1;
+    private static final int MESSAGE_STATUS_UPDATE = 2;
+    private static final int GROUP_MESSAGE = 3;
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
+        Integer type=Integer.parseInt(remoteMessage.getData().get("type"));
+        Log.i("***************",Integer.toString(type));
+        if(type==PRIAVTE_MESSAGE){
+            newPrivateMessage(remoteMessage);
+        }else  if(type==MESSAGE_STATUS_UPDATE){
+            updateMessageStatus(remoteMessage);
+        }else if(type==GROUP_MESSAGE){
+            newGroupMessage(remoteMessage);
+        }
+    }
+    public void newPrivateMessage(RemoteMessage remoteMessage){
+        //UNPACKING MESSAGE FROM SERVER
         String sender_id=remoteMessage.getData().get("sender_id");
         String recipient_id=remoteMessage.getData().get("recipient_id");
         String username=remoteMessage.getData().get("s_username");
@@ -60,27 +78,66 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String text=remoteMessage.getData().get("text");
         String date=remoteMessage.getData().get("date");
         String time=remoteMessage.getData().get("time");
-        String status=remoteMessage.getData().get("status");
         String amorpm=remoteMessage.getData().get("amorpm");
         String msgImage=remoteMessage.getData().get("image");
         String dp=remoteMessage.getData().get("s_image");
         if(dp==null){
             dp="";
         }
-        if(text==null){
-            updateMessageStatus(messsage_id,status);
-        }else{
-            //******** NEW MESSAGE RECEIVED**********
-            MessageTable messageTable=new MessageTable(messsage_id,text,sender_id,recipient_id,date,time,amorpm,msgImage);
-            messageTable.setStatus("Sent");
-            UserInfoTable userInfoTable=new UserInfoTable(username,firstName,lastName,email,dp,sender_id,text,time,date,amorpm);
 
-            storeMessageLocally(messageTable,userInfoTable,sender_id);
-            showNotification(firstName,text);
-            tellServerThatMessageReceived(messsage_id);
-        }
+        //COMBINING REQUIRED DATA
+        MessageTable messageTable=new MessageTable(messsage_id,text,sender_id,recipient_id,date,time,amorpm,msgImage);
+        messageTable.setStatus("Sent");
+        UserInfoTable userInfoTable=new UserInfoTable(username,firstName,lastName,email,dp,sender_id,text,time,date,amorpm);
+
+        //STORING MESSAGE LOCALLY
+        MyRepository repository=new MyRepository(this.getApplication());
+        repository.insertMessage(messageTable);
+        repository.updateOrCreateUserInfo(userInfoTable);
+        repository.setUnseenCount(sender_id);
+
+        //SHOWING NOTIFICATION
+        showNotification(firstName,text);
+
+        //GIVING RESPONSE BACK TO SERVER
+        tellServerThatMessageReceived(messsage_id);
     }
+    public void updateMessageStatus(RemoteMessage remoteMessage){
+        //UNPACKING MESSAGE FROM SERVER
+        String messsage_id=remoteMessage.getData().get("id");
+        String status=remoteMessage.getData().get("status");
 
+        //UPDATING STATUS LOCALLY
+        MyRepository myRepository=new MyRepository(getApplication());
+        myRepository.updateMessageStatus(messsage_id,status);
+    }
+    public void newGroupMessage(RemoteMessage remoteMessage){
+        //UNPACKING MESSAGE FROM SERVER
+        String event=remoteMessage.getData().get("event");
+        String groupName=remoteMessage.getData().get("group_name");
+        String groupImage=remoteMessage.getData().get("group_image");
+        String groupId=remoteMessage.getData().get("group_id");
+        String groupMessageId=remoteMessage.getData().get("group_message_id");
+        String senderId=remoteMessage.getData().get("sender_id");
+        String senderImage=remoteMessage.getData().get("sender_image");
+        String senderName=remoteMessage.getData().get("sender_name");
+        String text=remoteMessage.getData().get("text");
+        String date=remoteMessage.getData().get("date");
+        String time=remoteMessage.getData().get("time");
+        String amorpm=remoteMessage.getData().get("amorpm");
+        String msgImage=remoteMessage.getData().get("image");
+
+        Log.i("************","event: "+event);
+        //COMBINING REQUIRED DATA
+        GroupMessageTable groupMessageTable=new GroupMessageTable(groupMessageId,text,event,msgImage,senderId,senderName,senderImage,groupId,
+                            date,time,amorpm,null);
+
+        //STORING MESSAGE LOCALLY
+        GroupRepository repository=new GroupRepository(getApplication());
+        repository.insertOrUpdateGroup(groupId,groupName,groupImage);
+        repository.insertMessage(groupMessageTable);
+
+    }
     public void tellServerThatMessageReceived(String messsage_id){
         RetrofitClient retrofitClient=new RetrofitClient();
         Call<Message> call=retrofitClient.jsonPlaceHolderApi.updateMessageStatus(messsage_id,"Sent");
@@ -89,29 +146,17 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             public void onResponse(Call<Message> call, Response<Message> response) {
 
             }
-
             @Override
             public void onFailure(Call<Message> call, Throwable t) {
 
             }
         });
     }
-    public void storeMessageLocally(MessageTable messageTable,UserInfoTable userInfoTable,String sender_id){
-        MyRepository repository=new MyRepository(this.getApplication());
-        repository.insertMessage(messageTable);
-        repository.updateOrCreateUserInfo(userInfoTable);
-        repository.setUnseenCount(sender_id);
 
-    }
-    public void updateMessageStatus(String messsage_id,String status){
-        MyRepository myRepository=new MyRepository(getApplication());
-        myRepository.updateMessageStatus(messsage_id,status);
-    }
     public void showNotification(String title,String message){
         boolean result=shouldShowNotification(this);
 
         if(result){
-            Log.i("****","true");
             Intent intent = new Intent(this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);

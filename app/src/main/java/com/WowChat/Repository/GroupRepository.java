@@ -12,6 +12,7 @@ import com.WowChat.Room.Entities.GroupMessageTable;
 import com.WowChat.Room.Entities.GroupTable;
 import com.WowChat.Room.MyDatabase;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GroupRepository {
@@ -60,6 +61,42 @@ public class GroupRepository {
             @Override
             protected Void doInBackground(Void... voids) {
                 groupMessageDao.updateMessageStatus(messageId,status);
+                return null;
+            }
+        }.execute();
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    public void updateImageAddress(final String messageId, final String image){
+        new AsyncTask<Void,Void,Void>(){
+            @Override
+            protected Void doInBackground(Void... voids) {
+                groupMessageDao.updateImageAddress(messageId,image);
+                return null;
+            }
+        }.execute();
+    }
+
+
+    @SuppressLint("StaticFieldLeak")
+    public void deleteGroup(final ArrayList<GroupTable> groupTables){
+        new AsyncTask<Void,Void,Void>(){
+            @Override
+            protected Void doInBackground(Void... voids) {
+                for( GroupTable x: groupTables){
+                        groupDao.deleteGroup(x);
+                }
+                return null;
+            }
+        }.execute();
+    }
+    @SuppressLint("StaticFieldLeak")
+    public void deleteAllGroupsAndMessages(){
+        new AsyncTask<Void,Void,Void>(){
+            @Override
+            protected Void doInBackground(Void... voids) {
+                groupDao.deleteAllGroups();
+                groupMessageDao.deleteAllGroupMessages();
                 return null;
             }
         }.execute();

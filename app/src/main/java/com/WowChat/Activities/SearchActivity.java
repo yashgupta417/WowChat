@@ -13,11 +13,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.WowChat.Adapters.ShotAdapter;
 import com.WowChat.Adapters.UserAdapter;
 import com.WowChat.Retrofit.RetrofitClient;
 import com.WowChat.Retrofit.User;
-import com.bumptech.glide.Glide;
 import com.WowChat.R;
 
 import java.util.ArrayList;

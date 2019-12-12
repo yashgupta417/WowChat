@@ -10,6 +10,7 @@ public class GroupMessageTable {
     @PrimaryKey
     private String id;
     private String text;
+    private String event;
     private String image;
     private String senderId;
     private String senderName;
@@ -20,10 +21,11 @@ public class GroupMessageTable {
     private String AMorPM;
     private String status;
 
-    public GroupMessageTable(@NonNull String id, String text, String image, String senderId, String senderName, String senderImage,
-                             String group_id, String dateofmessaging, String timeofmessaging, String AMorPM) {
+    public GroupMessageTable(@NonNull String id, String text,String event, String image, String senderId, String senderName, String senderImage,
+                             String group_id, String dateofmessaging, String timeofmessaging, String AMorPM,String status) {
         this.id = id;
         this.text = text;
+        this.event=event;
         this.image = image;
         this.senderId = senderId;
         this.senderName = senderName;
@@ -32,6 +34,7 @@ public class GroupMessageTable {
         this.dateofmessaging = dateofmessaging;
         this.timeofmessaging = timeofmessaging;
         this.AMorPM = AMorPM;
+        this.status=status;
     }
 
 
@@ -123,5 +126,13 @@ public class GroupMessageTable {
 
     public void setSenderImage(String senderImage) {
         this.senderImage = senderImage;
+    }
+
+    public String getEvent() {
+        return event;
+    }
+
+    public void setEvent(String event) {
+        this.event = event;
     }
 }

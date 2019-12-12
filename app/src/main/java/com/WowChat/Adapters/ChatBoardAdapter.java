@@ -159,6 +159,7 @@ public class ChatBoardAdapter extends ListAdapter<UserInfoTable, ChatBoardAdapte
 
     }
 
+
     public UserInfoTable getUserInfoAt(int position){
         return getItem(position);
     }

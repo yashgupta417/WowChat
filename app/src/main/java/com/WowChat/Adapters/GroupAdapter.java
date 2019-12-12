@@ -27,7 +27,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class GroupAdapter extends ListAdapter<GroupTable,GroupAdapter.MyViewHolder> {
 
-    private GroupAdapter.onItemClickListener mlistener;
+    private onItemClickListener mlistener;
     private Context context;
 
     public GroupAdapter(Context context) {
@@ -48,8 +48,10 @@ public class GroupAdapter extends ListAdapter<GroupTable,GroupAdapter.MyViewHold
     };
 
     public interface onItemClickListener {
-        void onItemClick(UserInfoTable userInfoTable);
+        void onItemClick(GroupTable groupTable);
+        void onItemLongClick(GroupTable groupTable);
     }
+
 
     public void setOnItemClickListener(GroupAdapter.onItemClickListener listener) {
         mlistener = listener;
@@ -62,6 +64,30 @@ public class GroupAdapter extends ListAdapter<GroupTable,GroupAdapter.MyViewHold
             super(itemView);
             imageView=itemView.findViewById(R.id.group_image);
             textView=itemView.findViewById(R.id.group_name);
+            itemView.setOnClickListener(
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (listener != null) {
+                                int position = getAdapterPosition();
+                                if (position != RecyclerView.NO_POSITION) {
+                                    listener.onItemClick(getItem(position));
+                                }
+                            }
+                        }
+                    });
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if (listener != null) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            listener.onItemLongClick(getItem(position));
+                        }
+                    }
+                    return true;
+                }
+            });
 
         }
     }

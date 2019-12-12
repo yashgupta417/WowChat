@@ -25,6 +25,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.WowChat.Repository.GroupRepository;
 import com.WowChat.ViewModel.MainAcitivityViewModel;
 import com.bumptech.glide.Glide;
 import com.WowChat.R;
@@ -206,6 +207,8 @@ public class ProfileActivity extends AppCompatActivity {
                     sharedPreferences.edit().putString("token",null).apply();
 
                     viewModel.deleteMessagesAndUserInfo();
+                    GroupRepository groupRepository=new GroupRepository(getApplication());
+                    groupRepository.deleteAllGroupsAndMessages();
                     Toast.makeText(com.WowChat.Activities.ProfileActivity.this, "Logged out Successfully", Toast.LENGTH_SHORT).show();
                     Intent intent=new Intent(getApplicationContext(),LoginActivity.class);
                     startActivity(intent);
