@@ -34,6 +34,7 @@ import com.WowChat.Retrofit.GroupMessage;
 import com.WowChat.Retrofit.Message;
 import com.WowChat.Retrofit.RetrofitClient;
 import com.WowChat.Room.Entities.GroupMessageTable;
+import com.WowChat.Room.Entities.GroupTable;
 import com.WowChat.Room.Entities.MessageTable;
 import com.WowChat.Room.Entities.UserInfoTable;
 import com.bumptech.glide.Glide;
@@ -56,7 +57,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class GroupChatActivity extends AppCompatActivity {
-    String groupId,groupName,groupImage,myId,myName,myImage;
+    String groupId,myId,myName,myImage;
     EditText editText;
     ImageView imageSend,textSend;
     @Override
@@ -77,14 +78,16 @@ public class GroupChatActivity extends AppCompatActivity {
         myName=sharedPreferences.getString("first_name",null);
         myImage=sharedPreferences.getString("image",null);
         groupId=getIntent().getStringExtra("group_id");
-        groupName= getIntent().getStringExtra("group_name");
-        groupImage= getIntent().getStringExtra("group_image");
 
-        TextView groupNameTextView=findViewById(R.id.group_name);
-        groupNameTextView.setText(groupName);
+        GroupRepository repository=new GroupRepository(getApplication());
+        repository.getGroupDetail(groupId).observe(this, new Observer<GroupTable>() {
+            @Override
+            public void onChanged(GroupTable groupTable) {
+                showBasicUI(groupTable.getName(),groupTable.getImage());
+            }
+        });
 
-        CircleImageView dp=findViewById(R.id.group_dp);
-        Glide.with(this).load(groupImage).diskCacheStrategy(DiskCacheStrategy.DATA).placeholder(R.drawable.loadingc).into(dp);
+
         //*************************************
 
         //*******RecycleView*********
@@ -94,7 +97,7 @@ public class GroupChatActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
 
-        GroupRepository repository=new GroupRepository(getApplication());
+
         repository.getGroupMessages(groupId).observe(this, new Observer<List<GroupMessageTable>>() {
             @Override
             public void onChanged(List<GroupMessageTable> groupMessageTables) {
@@ -110,8 +113,24 @@ public class GroupChatActivity extends AppCompatActivity {
                 recyclerView.scrollToPosition(adapter.getItemCount()-1);
             }
         });
+        adapter.setOnItemClickListener(new GroupMessageAdapter.onItemClickListener() {
+            @Override
+            public void onItemClick(GroupMessageTable groupMessageTable) {
+                if(groupMessageTable.getImage()!=null){
+                    Intent intent=new Intent(getApplicationContext(),ImageViewerActivity.class);
+                    intent.putExtra("uri",groupMessageTable.getImage());
+                    startActivity(intent);
+                }
+            }
+        });
         //**************************
 
+    }
+    public void showBasicUI(String groupName,String groupImage){
+        TextView groupNameTextView=findViewById(R.id.group_name);
+        groupNameTextView.setText(groupName);
+        CircleImageView dp=findViewById(R.id.group_dp);
+        Glide.with(this).load(groupImage).diskCacheStrategy(DiskCacheStrategy.DATA).placeholder(R.drawable.loadingc).into(dp);
     }
     public void setUpEditTextListener(){
         editText.addTextChangedListener(new TextWatcher() {
@@ -145,8 +164,6 @@ public class GroupChatActivity extends AppCompatActivity {
     public void goToWall(View view){
         Intent intent=new Intent(getApplicationContext(), WallActivity.class);
         intent.putExtra("group_id",groupId);
-        intent.putExtra("group_name",groupName);
-        intent.putExtra("group_image",groupImage);
         startActivity(intent);
     }
     public void sendGMsg(View view){

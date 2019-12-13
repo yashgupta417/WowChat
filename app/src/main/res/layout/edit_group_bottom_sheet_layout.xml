@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#FFF"
+>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Edit"
+        android:textColor="#000"
+        android:textStyle="bold"
+        android:textSize="26sp"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="10dp"/>
+    <TextView
+        android:id="@+id/ed_grp_btm_sht_textView1"
+        android:layout_marginVertical="20dp"
+        android:layout_marginHorizontal="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Change Group Picture"
+        android:textColor="#00BFFF"
+
+        android:textSize="18sp"/>
+
+
+</LinearLayout>

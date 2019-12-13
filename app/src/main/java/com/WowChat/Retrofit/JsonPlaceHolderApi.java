@@ -89,4 +89,8 @@ public interface JsonPlaceHolderApi {
                                    @Part("amorpm") RequestBody amorpm,
                                    @Part MultipartBody.Part image);
 
+    @Multipart
+    @PATCH("group_detail/{group_id}/")
+    Call<GroupRead> updateGroupDP(@Path("group_id") String groupId, @Part MultipartBody.Part image);
+
 }

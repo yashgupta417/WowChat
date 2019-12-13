@@ -5,6 +5,7 @@ import androidx.appcompat.view.ActionMode;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
@@ -15,6 +16,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.WowChat.Adapters.GroupAdapter;
+import com.WowChat.ModalBottomSheet.GroupBottomSheetDialog;
 import com.WowChat.R;
 import com.WowChat.Repository.GroupRepository;
 import com.WowChat.Repository.MyRepository;
@@ -23,7 +25,7 @@ import com.WowChat.Room.Entities.GroupTable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GroupActivity extends AppCompatActivity {
+public class GroupActivity extends AppCompatActivity  {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +38,7 @@ public class GroupActivity extends AppCompatActivity {
         Toolbar toolbar=findViewById(R.id.group_toolbar);
         setSupportActionBar(toolbar);
         RecyclerView recyclerView=findViewById(R.id.group_recyclerView);
-        recyclerView.setLayoutManager(new GridLayoutManager(this,2));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
         final GroupAdapter adapter=new GroupAdapter(this);
         recyclerView.setAdapter(adapter);
@@ -50,59 +52,19 @@ public class GroupActivity extends AppCompatActivity {
         adapter.setOnItemClickListener(new GroupAdapter.onItemClickListener() {
             @Override
             public void onItemClick(GroupTable groupTable) {
-                Log.i("***********","touched");
                 Intent intent=new Intent(getApplicationContext(),GroupChatActivity.class);
                 intent.putExtra("group_id",groupTable.getId());
-                intent.putExtra("group_name",groupTable.getName());
-                intent.putExtra("group_image",groupTable.getImage());
                 startActivity(intent);
             }
 
             @Override
             public void onItemLongClick(GroupTable groupTable) {
-              /*  if (actionMode != null) {
-                    return;
-                }
-                selectedGroups.add(groupTable);
-                actionMode = startSupportActionMode(callback);*/
+                GroupBottomSheetDialog dialog=new GroupBottomSheetDialog(groupTable.getId());
+                dialog.show(getSupportFragmentManager(),"group_bottom_sheet");
             }
         });
 
-    }/*
-    ArrayList<GroupTable> selectedGroups;
-    ActionMode actionMode;
-    ActionMode.Callback callback=new ActionMode.Callback() {
-        @Override
-        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            mode.setTitle("choose groups");
-            MenuInflater menuInflater=mode.getMenuInflater();
-            menuInflater.inflate(R.menu.group_action_menu,menu);
-            return true;
-        }
-
-        @Override
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            return false;
-        }
-
-        @Override
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            switch (item.getItemId()){
-                case R.id.delete:deleteGroup();
-            }
-            return true;
-        }
-
-        @Override
-        public void onDestroyActionMode(ActionMode mode) {
-            actionMode=null;
-        }
-    };
-    public void deleteGroup(){
-        GroupRepository repository=new GroupRepository(getApplication());
-        repository.deleteGroup(selectedGroups);
-        selectedGroups.clear();
-    }*/
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater=getMenuInflater();

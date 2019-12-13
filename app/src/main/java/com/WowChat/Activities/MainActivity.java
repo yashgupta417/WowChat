@@ -23,6 +23,8 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.WowChat.Adapters.ChatBoardAdapter;
+import com.WowChat.ModalBottomSheet.ChatBoardBottomSheetDialog;
+import com.WowChat.ModalBottomSheet.GroupBottomSheetDialog;
 import com.WowChat.R;
 import com.WowChat.Retrofit.RetrofitClient;
 import com.WowChat.Retrofit.User;
@@ -83,6 +85,12 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("image",userInfoTable.getPersonImage());
                 intent.putExtra("id",userInfoTable.getPersonId());
                 startActivity(intent);
+            }
+
+            @Override
+            public void onItemLongClick(UserInfoTable userInfoTable) {
+                ChatBoardBottomSheetDialog dialog=new ChatBoardBottomSheetDialog(userInfoTable.getPersonId());
+                dialog.show(getSupportFragmentManager(),"chatboard_bottom_sheet");
             }
         });
     }

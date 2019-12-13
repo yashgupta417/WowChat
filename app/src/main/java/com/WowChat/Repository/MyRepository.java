@@ -60,6 +60,17 @@ public class MyRepository {
         return  null;
     }
 
+    @SuppressLint("StaticFieldLeak")
+    public void deleteChat(final String id){
+        new AsyncTask<Void,Void,Void>(){
+            @Override
+            protected Void doInBackground(Void... voids) {
+                userInfoDao.deleteChat(id);
+                return null;
+            }
+        }.execute();
+    }
+
 
     public void updateOrCreateUserInfo(UserInfoTable userInfoTable){
         new UpdateOrCreateUserInfoAsyncTask(userInfoDao).execute(userInfoTable);

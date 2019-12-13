@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 
 public class GroupRead {
-    @SerializedName("group_id")
+    @SerializedName("id")
     @Expose
     private Integer groupId;
     @SerializedName("group_name")

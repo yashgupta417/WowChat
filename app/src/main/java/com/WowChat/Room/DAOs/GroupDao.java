@@ -17,12 +17,18 @@ public interface GroupDao {
     LiveData<List<GroupTable>> getGroups();
 
     @Query("INSERT OR REPLACE INTO GroupTable(id,name,image) VALUES(:id,:name,:image)")
-    void updateOrCreateUserInfo(String id,String name,String image);
+    void updateOrCreateGroup(String id,String name,String image);
 
-    @Delete
-    void deleteGroup(GroupTable groupTable);
+    @Query("DELETE FROM GROUPTABLE WHERE id=:id")
+    void deleteGroup(String id);
 
     @Query("DELETE FROM GroupTable")
     void deleteAllGroups();
+
+    @Query("SELECT * FROM GROUPTABLE WHERE id=:id")
+    LiveData<GroupTable> getGroupDetails(String id);
+
+
+
 
 }

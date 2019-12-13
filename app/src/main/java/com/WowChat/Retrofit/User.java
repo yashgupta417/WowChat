@@ -53,6 +53,14 @@ public class User {
         this.username = username;
         this.password=password;
     }
+    public User(Integer id,String username, String firstName, String lastName, String image) {
+        this.id=id;
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.image=image;
+    }
+
 
     public User(String username, String email, String firstName, String lastName, String password) {
         this.username = username;

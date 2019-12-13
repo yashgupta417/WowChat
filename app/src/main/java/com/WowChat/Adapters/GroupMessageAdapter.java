@@ -90,6 +90,19 @@ public class GroupMessageAdapter extends ListAdapter<GroupMessageTable,GroupMess
             event=itemView.findViewById(R.id.group_event);
             friendName=itemView.findViewById(R.id.friend_name);
             friendDp=itemView.findViewById(R.id.friend_dp);
+
+            itemView.setOnClickListener(
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (listener != null) {
+                                int position = getAdapterPosition();
+                                if (position != RecyclerView.NO_POSITION) {
+                                    listener.onItemClick(getItem(position));
+                                }
+                            }
+                        }
+                    });
         }
     }
 
@@ -186,7 +199,7 @@ public class GroupMessageAdapter extends ListAdapter<GroupMessageTable,GroupMess
     }
 
     @Override
-    protected GroupMessageTable getItem(int position) {
+    public GroupMessageTable getItem(int position) {
         return super.getItem(position);
     }
 }

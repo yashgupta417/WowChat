@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
@@ -55,6 +56,7 @@ public class ChatBoardAdapter extends ListAdapter<UserInfoTable, ChatBoardAdapte
 
     public interface onItemClickListener {
         void onItemClick(UserInfoTable userInfoTable);
+        void onItemLongClick(UserInfoTable userInfoTable);
     }
 
     public void setOnItemClickListener(onItemClickListener listener) {
@@ -92,6 +94,18 @@ public class ChatBoardAdapter extends ListAdapter<UserInfoTable, ChatBoardAdapte
                             }
                         }
                     });
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if (listener != null) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            listener.onItemLongClick(getItem(position));
+                        }
+                    }
+                    return true;
+                }
+            });
         }
     }
 

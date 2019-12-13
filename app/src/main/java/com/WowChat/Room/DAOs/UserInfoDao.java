@@ -36,9 +36,9 @@ public interface UserInfoDao {
 
     @Query("UPDATE userinfotable SET unseenMessageCount=:count WHERE personId=:id")
     void setUnseenCount(Integer count,String id);
-//    @Query("UPDATE userinfotable SET unseenMessageCount=unseenMessageCount+1 WHERE personUsername=:username")
-//    void incrementUnseenCount(String username);
-//
-//    @Query("UPDATE userinfotable SET unseenMessageCount=unseenMessageCount-1 WHERE personUsername=:username")
-//    void decrementUnseenCount(String username);
+
+    @Query("DELETE FROM USERINFOTABLE WHERE personId=:id")
+    void deleteChat(String id);
+
+
 }

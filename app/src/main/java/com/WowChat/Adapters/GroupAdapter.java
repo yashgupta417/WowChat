@@ -105,7 +105,10 @@ public class GroupAdapter extends ListAdapter<GroupTable,GroupAdapter.MyViewHold
     @Override
     public void onBindViewHolder(@NonNull GroupAdapter.MyViewHolder myViewHolder, int i) {
         myViewHolder.textView.setText(getItem(i).getName());
-       // Glide.with(context).load(getItem(i).getImage()).placeholder(R.drawable.placeholder).into(myViewHolder.imageView);
+        if(getItem(i).getImage()!=null){
+            Glide.with(context).load(getItem(i).getImage()).placeholder(R.drawable.placeholder).into(myViewHolder.imageView);
+        }
+
     }
 
     @Override

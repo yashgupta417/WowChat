@@ -1,19 +1,29 @@
 package com.WowChat.Activities;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Color;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,12 +38,19 @@ import com.WowChat.Retrofit.GroupWrite;
 import com.WowChat.Retrofit.RetrofitClient;
 import com.WowChat.Retrofit.User;
 import com.WowChat.Room.Entities.UserInfoTable;
+import com.bumptech.glide.Glide;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import id.zelory.compressor.Compressor;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -136,6 +153,10 @@ public class NewGroupActivity extends AppCompatActivity {
     }
     public void createGroup(){
         String groupName=groupNameEditText.getText().toString();
+        if(image==null){
+            Toast.makeText(this, "Image Required", Toast.LENGTH_SHORT).show();
+            return;
+        }
         if(groupName.isEmpty()){
             Toast.makeText(this, "Enter group name", Toast.LENGTH_SHORT).show();
             return;
@@ -165,8 +186,7 @@ public class NewGroupActivity extends AppCompatActivity {
                     return;
                 }
                 GroupWrite group=response.body();
-                GroupRepository repository=new GroupRepository(getApplication());
-                repository.insertOrUpdateGroup(Integer.toString(group.getGroupId()),group.getGroupName(),group.getGroupImage());
+
 
 
                 addMember(selectedFriends.get(0).getPersonId(),Integer.toString(group.getGroupId()));
@@ -190,9 +210,8 @@ public class NewGroupActivity extends AppCompatActivity {
                 }
                 selectedFriends.remove(0);
                 if(selectedFriends.size()==0){
-                    Toast.makeText(NewGroupActivity.this, "Group Created", Toast.LENGTH_SHORT).show();
-                    dialog.hideDialog();
-                    finish();
+                    updateGroupDp(group_id,image);
+
                 }else{
                     addMember(selectedFriends.get(0).getPersonId(),group_id);
                 }
@@ -200,6 +219,75 @@ public class NewGroupActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
+                Toast.makeText(NewGroupActivity.this, t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    Uri image;
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode==2){
+            if(grantResults.length>0 && grantResults[0]== PackageManager.PERMISSION_GRANTED){
+                Intent intent=new Intent(getApplicationContext(),GalleryActivity.class);
+                startActivityForResult(intent,1);
+            }
+        }
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode==1 && resultCode==RESULT_OK && data!=null){
+          image=data.getData();
+            ImageView dp=findViewById(R.id.new_group_dp);
+            Glide.with(this).load(image.getPath()).into(dp);
+        }
+    }
+    public void chooseGroupDp(View view){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)!=PackageManager.PERMISSION_GRANTED){
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},2);
+            }else{
+                Intent intent=new Intent(getApplicationContext(),GalleryActivity.class);
+                startActivityForResult(intent,1);
+
+            }
+        }
+    }
+    public void updateGroupDp(String group_id,Uri image){
+
+        File file = new File(image.toString());
+        File compressimagefile=null;
+        try {
+            compressimagefile =new Compressor(this).compressToFile(file);
+        } catch (IOException e) {
+            compressimagefile=file;
+            e.printStackTrace();
+        }
+
+        final RequestBody requestBody = RequestBody.create( compressimagefile, MediaType.parse("multipart/form-data"));
+        MultipartBody.Part imagePart = MultipartBody.Part.createFormData("group_image",file.getName(),requestBody);
+
+        RetrofitClient retrofitClient=new RetrofitClient();
+        Call<GroupRead> call=retrofitClient.jsonPlaceHolderApi.updateGroupDP(group_id,imagePart);
+        call.enqueue(new Callback<GroupRead>() {
+            @Override
+            public void onResponse(Call<GroupRead> call, Response<GroupRead> response) {
+                dialog.hideDialog();
+                if(!response.isSuccessful()){
+                    Toast.makeText(NewGroupActivity.this, response.message(), Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+                GroupRead group=response.body();
+                GroupRepository repository=new GroupRepository(getApplication());
+                repository.insertOrUpdateGroup(Integer.toString(group.getGroupId()),group.getGroupName(),group.getGroupImage());
+                Toast.makeText(NewGroupActivity.this, "Group Created", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+
+            @Override
+            public void onFailure(Call<GroupRead> call, Throwable t) {
                 Toast.makeText(NewGroupActivity.this, t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             }
         });

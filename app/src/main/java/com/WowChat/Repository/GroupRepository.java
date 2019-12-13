@@ -33,12 +33,16 @@ public class GroupRepository {
         return groupMessageDao.getMessages(groupId);
     }
 
+    public LiveData<GroupTable> getGroupDetail(String id){
+        return groupDao.getGroupDetails(id);
+    }
+
     @SuppressLint("StaticFieldLeak")
     public void insertOrUpdateGroup(final String id, final String name, final String image){
         new AsyncTask<Void,Void,Void>(){
             @Override
             protected Void doInBackground(Void... voids) {
-                groupDao.updateOrCreateUserInfo(id,name,image);
+                groupDao.updateOrCreateGroup(id,name,image);
                 return  null;
             }
         }.execute();
@@ -79,13 +83,11 @@ public class GroupRepository {
 
 
     @SuppressLint("StaticFieldLeak")
-    public void deleteGroup(final ArrayList<GroupTable> groupTables){
+    public void deleteGroup(final String id){
         new AsyncTask<Void,Void,Void>(){
             @Override
             protected Void doInBackground(Void... voids) {
-                for( GroupTable x: groupTables){
-                        groupDao.deleteGroup(x);
-                }
+                groupDao.deleteGroup(id);
                 return null;
             }
         }.execute();
