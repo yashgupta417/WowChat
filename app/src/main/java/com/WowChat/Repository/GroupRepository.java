@@ -88,6 +88,7 @@ public class GroupRepository {
             @Override
             protected Void doInBackground(Void... voids) {
                 groupDao.deleteGroup(id);
+                groupMessageDao.deleteMessagesOfGroup(id);
                 return null;
             }
         }.execute();

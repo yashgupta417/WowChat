@@ -98,7 +98,7 @@ public class ProfileActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(requestCode==2){
             if(grantResults.length>0 && grantResults[0]== PackageManager.PERMISSION_GRANTED){
-                Intent intent=new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                Intent intent=new Intent(getApplicationContext(),GalleryActivity.class);
                 startActivityForResult(intent,1);
             }
         }
@@ -124,22 +124,16 @@ public class ProfileActivity extends AppCompatActivity {
 
             }else{
                 Log.i("me","inside else");
-                Intent intent=new Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                Intent intent=new Intent(getApplicationContext(),GalleryActivity.class);
                 startActivityForResult(intent,1);
 
             }
         }
     }
 
-    public String getRealPathFromURI(Uri uri) {
-        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-        cursor.moveToFirst();
-        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-        return cursor.getString(idx);
-    }
     public void uploadPost(){
         load.setVisibility(View.VISIBLE);
-        File file = new File(getRealPathFromURI(image));
+        File file = new File(image.getPath());
         File compressimagefile=null;
         try {
             compressimagefile =new Compressor(this).compressToFile(file);

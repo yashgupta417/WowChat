@@ -11,9 +11,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Activities.GalleryActivity"></activity>
-        <activity android:name=".Activities.WallActivity" />
-        <activity android:name=".Activities.NewGroupActivity" />
+        <activity android:name=".Activities.OtherGroupActivity" android:screenOrientation="portrait"></activity>
+        <activity android:name=".Activities.GroupQueryActivity" />
+        <activity android:name=".Activities.GalleryActivity" />
+        <activity android:name=".Activities.WallActivity" android:screenOrientation="portrait" />
+        <activity android:name=".Activities.NewGroupActivity" android:screenOrientation="portrait"/>
         <activity
             android:name=".Activities.GroupChatActivity"
             android:screenOrientation="portrait"

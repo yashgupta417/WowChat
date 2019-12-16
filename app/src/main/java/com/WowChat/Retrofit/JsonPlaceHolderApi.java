@@ -70,7 +70,7 @@ public interface JsonPlaceHolderApi {
     Call<GroupWrite> createGroup(@Body GroupWrite groupWrite);
 
     @POST("add_member/")
-    Call<User> addMember(@Query("user_id") String userId,@Query("group_id") String groupId);
+    Call<User> addMember(@Query("user_id") String userId,@Query("group_id") String groupId,@Query("member_id") String myId);
 
     @POST("send_group_message/")
     Call<GroupMessage> sendGroupMessage(@Body GroupMessage message);
@@ -93,4 +93,18 @@ public interface JsonPlaceHolderApi {
     @PATCH("group_detail/{group_id}/")
     Call<GroupRead> updateGroupDP(@Path("group_id") String groupId, @Part MultipartBody.Part image);
 
+    @Multipart
+    @POST("memory_create/")
+    Call<MemoryWrite> postMemory(@Part("text") RequestBody text,
+                                             @Part("group") RequestBody group,
+                                             @Part("member_posted") RequestBody memberPosted,
+                                             @Part MultipartBody.Part image);
+    @GET("memory_list/")
+    Call<List<MemoryRead>> getMemories(@Query("group_id") String groupId);
+
+    @GET("group_query/")
+    Call<List<GroupRead>> queryGroups(@Query("query") String groupName);
+
+    @POST("follow_group/")
+    Call<User> followGroup(@Query("user_id") String userId,@Query("group_id") String groupId);
 }

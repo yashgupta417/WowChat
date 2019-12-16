@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,12 +19,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.WowChat.Activities.GalleryActivity;
-import com.WowChat.Activities.NewGroupActivity;
 import com.WowChat.LoadingDialog;
 import com.WowChat.R;
-import com.WowChat.Repository.GroupRepository;
-import com.WowChat.Retrofit.GroupMessage;
-import com.WowChat.Retrofit.GroupRead;
+import com.WowChat.Repository.MyRepository;
+import com.WowChat.Retrofit.MemoryWrite;
 import com.WowChat.Retrofit.RetrofitClient;
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -41,31 +40,43 @@ import retrofit2.Response;
 
 import static android.app.Activity.RESULT_OK;
 
-public class EditGroupBottomSheetDialog extends BottomSheetDialogFragment {
-
+public class AddMemoryBottomSheetDialog extends BottomSheetDialogFragment {
     private String groupId;
-
-    public EditGroupBottomSheetDialog(String groupId){
+    private String myId;
+    ImageView imageView;
+    TextView post;
+    EditText text;
+    public AddMemoryBottomSheetDialog(String groupId,String myId) {
         this.groupId=groupId;
+        this.myId=myId;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.edit_group_bottom_sheet_layout, container, false);
-        TextView textView=v.findViewById(R.id.ed_grp_btm_sht_textView1);
-        textView.setOnClickListener(new View.OnClickListener() {
+        View v = inflater.inflate(R.layout.add_memory_bottom_sheet_layout, container, false);
+        imageView=v.findViewById(R.id.memory_add_image);
+        post=v.findViewById(R.id.add_memory_post);
+        text=v.findViewById(R.id.memory_add_edittext);
+        imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 chooseGroupDp();
             }
         });
+        post.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(text.getText().toString().trim().isEmpty()){
+                    Toast.makeText(getContext(), "Write Something", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if(image!=null ){
+                    postMemory();
+                }
+            }
+        });
         return v;
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
     }
 
     Uri image;
@@ -86,7 +97,11 @@ public class EditGroupBottomSheetDialog extends BottomSheetDialogFragment {
         if(requestCode==1 && resultCode==RESULT_OK && data!=null){
             image=data.getData();
             if(image!=null) {
-                updateGroupDp(groupId, image);
+                post.setEnabled(true);
+                post.setAlpha(1f);
+                post.setTextColor(getResources().getColor(R.color.wowblue));
+                Glide.with(getContext()).load(image.getPath()).into(imageView);
+                //updateGroupDp(groupId, image);
             }
         }
     }
@@ -101,54 +116,44 @@ public class EditGroupBottomSheetDialog extends BottomSheetDialogFragment {
             }
         }
     }
-    public void updateGroupDp(String group_id,Uri image){
+
+    public void postMemory(){
         final LoadingDialog dialog=new LoadingDialog(getActivity());
         dialog.showDialog();
-        File file = new File(image.toString());
-        File compressimagefile=null;
+        File file = new File(image.getPath());
+        File compressimagefile = null;
         try {
-            compressimagefile =new Compressor(getContext()).compressToFile(file);
+            compressimagefile = new Compressor(getContext()).compressToFile(file);
         } catch (IOException e) {
-            compressimagefile=file;
+            compressimagefile = file;
             e.printStackTrace();
         }
 
-        final RequestBody requestBody = RequestBody.create( compressimagefile, MediaType.parse("multipart/form-data"));
-        MultipartBody.Part imagePart = MultipartBody.Part.createFormData("group_image",file.getName(),requestBody);
-
-        RetrofitClient retrofitClient=new RetrofitClient();
-        Call<GroupRead> call=retrofitClient.jsonPlaceHolderApi.updateGroupDP(group_id,imagePart);
-        call.enqueue(new Callback<GroupRead>() {
+        final RequestBody requestBody = RequestBody.create(compressimagefile, MediaType.parse("multipart/form-data"));
+        MultipartBody.Part imagePart = MultipartBody.Part.createFormData("image", file.getName(), requestBody);
+        RequestBody textPart = RequestBody.create(text.getText().toString(), MediaType.parse("multipart/form-data"));
+        RequestBody memberPart = RequestBody.create(myId, MediaType.parse("multipart/form-data"));
+        RequestBody groupPart = RequestBody.create(groupId, MediaType.parse("multipart/form-data"));
+        RetrofitClient client=new RetrofitClient();
+        Call<MemoryWrite> call=client.jsonPlaceHolderApi.postMemory(textPart,groupPart,memberPart,imagePart);
+        call.enqueue(new Callback<MemoryWrite>() {
             @Override
-            public void onResponse(Call<GroupRead> call, Response<GroupRead> response) {
+            public void onResponse(Call<MemoryWrite> call, Response<MemoryWrite> response) {
                 dialog.hideDialog();
+                dismiss();
                 if(!response.isSuccessful()){
                     Toast.makeText(getContext(), response.message(), Toast.LENGTH_SHORT).show();
-                    dismiss();
+                    return;
                 }
-                GroupRead group=response.body();
-                GroupRepository repository=new GroupRepository(getActivity().getApplication());
-                repository.insertOrUpdateGroup(Integer.toString(group.getGroupId()),group.getGroupName(),group.getGroupImage());
-                new GroupRepository(getActivity().getApplication()).insertOrUpdateGroup(
-                        Integer.toString(group.getGroupId()),group.getGroupName(),group.getGroupImage());
-                mListener.onGroupDpUpdated(group.getGroupImage());
-                Toast.makeText(getContext(), "Group DP changed", Toast.LENGTH_SHORT).show();
-                dismiss();
+                Toast.makeText(getContext(), "Done", Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void onFailure(Call<GroupRead> call, Throwable t) {
-                Toast.makeText(getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<MemoryWrite> call, Throwable t) {
+                dialog.hideDialog();
                 dismiss();
+                Toast.makeText(getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-    }
-    private OnImageUpdatedListener mListener;
-    public interface OnImageUpdatedListener {
-        void onGroupDpUpdated(String image);
-    }
-
-    public void setOnImageUpdatedListener(OnImageUpdatedListener listener){
-        mListener=listener;
     }
 }

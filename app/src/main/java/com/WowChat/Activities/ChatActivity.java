@@ -361,7 +361,7 @@ public class ChatActivity extends AppCompatActivity {
             if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)!=PackageManager.PERMISSION_GRANTED){
                 requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},2);
             }else{
-                Intent intent=new Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                Intent intent=new Intent(getApplicationContext(),GalleryActivity.class);
                 startActivityForResult(intent,1);
 
             }
@@ -372,7 +372,7 @@ public class ChatActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(requestCode==2){
             if(grantResults.length>0 && grantResults[0]== PackageManager.PERMISSION_GRANTED){
-                Intent intent=new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                Intent intent=new Intent(getApplicationContext(),GalleryActivity.class);
                 startActivityForResult(intent,1);
             }
         }
@@ -388,16 +388,9 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
-    public String getRealPathFromURI(Uri uri) {
-        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-        cursor.moveToFirst();
-        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-        return cursor.getString(idx);
-    }
-
     public void sendImageMessage(Uri image) {
         Message message = settingUpMessage("",image);
-        File file = new File(getRealPathFromURI(image));
+        File file = new File(image.getPath());
         File compressimagefile = null;
         try {
             compressimagefile = new Compressor(this).compressToFile(file);

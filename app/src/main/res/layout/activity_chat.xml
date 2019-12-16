@@ -42,12 +42,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp"
-                android:fontFamily="sans-serif-thin"
                 android:onClick="goToOtherProfile"
                 android:text="Yash"
                 android:textColor="#FFF"
                 android:textSize="20sp"
-                android:textStyle="bold"
+
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"

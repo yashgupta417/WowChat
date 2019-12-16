@@ -33,5 +33,8 @@ public interface MessageDao {
     @Query("SELECT COUNT(*) From MessageTable WHERE sender=:friendId AND status='Sent'")
     int countUnseenMessages(String friendId);
 
+    @Query(("DELETE FROM MessageTable WHERE sender=:friendId OR recipient=:friendId"))
+    void deleteMessagesOfChat(String friendId);
+
 
 }

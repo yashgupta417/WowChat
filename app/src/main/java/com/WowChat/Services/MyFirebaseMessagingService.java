@@ -55,7 +55,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-
+        Log.i("************","NEW MESSAGE");
         Integer type=Integer.parseInt(remoteMessage.getData().get("type"));
         Log.i("***************",Integer.toString(type));
         if(type==PRIAVTE_MESSAGE){

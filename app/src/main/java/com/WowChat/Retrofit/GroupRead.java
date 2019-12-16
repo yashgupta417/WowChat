@@ -18,6 +18,9 @@ public class GroupRead {
     @SerializedName("members")
     @Expose
     private ArrayList<User> members;
+    @SerializedName("followers")
+    @Expose
+    private ArrayList<User> followers;
     @SerializedName("president")
     @Expose
     private User president;
@@ -75,5 +78,13 @@ public class GroupRead {
 
     public void setGroupId(Integer groupId) {
         this.groupId = groupId;
+    }
+
+    public ArrayList<User> getFollowers() {
+        return followers;
+    }
+
+    public void setFollowers(ArrayList<User> followers) {
+        this.followers = followers;
     }
 }

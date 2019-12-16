@@ -143,8 +143,6 @@ public class NewGroupActivity extends AppCompatActivity {
             }
         });
 
-
-
     }
 
     LoadingDialog dialog;
@@ -170,7 +168,7 @@ public class NewGroupActivity extends AppCompatActivity {
         Integer id=Integer.parseInt(id_string);
         UserInfoTable me=new UserInfoTable(null,null,null,null,null
                         ,id_string,null,null,null,null);
-        selectedFriends.add(me);
+        selectedFriends.add(0,me);
 
         GroupWrite newGroup=new GroupWrite(groupName,null,null,id,null);
         RetrofitClient retrofitClient=new RetrofitClient();
@@ -186,7 +184,8 @@ public class NewGroupActivity extends AppCompatActivity {
                     return;
                 }
                 GroupWrite group=response.body();
-
+                GroupRepository repository=new GroupRepository(getApplication());
+                repository.insertOrUpdateGroup(Integer.toString(group.getGroupId()),group.getGroupName(),group.getGroupImage());
 
 
                 addMember(selectedFriends.get(0).getPersonId(),Integer.toString(group.getGroupId()));
@@ -199,8 +198,10 @@ public class NewGroupActivity extends AppCompatActivity {
         });
     }
     public void addMember(String user_id, final String group_id){
+        SharedPreferences preferences=getSharedPreferences(getPackageName(),Context.MODE_PRIVATE);
+        String myId=preferences.getString("id",null);
         RetrofitClient retrofitClient=new RetrofitClient();
-        Call<User> call=retrofitClient.jsonPlaceHolderApi.addMember(user_id, group_id);
+        Call<User> call=retrofitClient.jsonPlaceHolderApi.addMember(user_id, group_id,myId);
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {

@@ -27,4 +27,7 @@ public interface GroupMessageDao {
 
     @Query("DELETE FROM GroupMessageTable")
     void deleteAllGroupMessages();
+
+    @Query(("DELETE FROM GROUPMESSAGETABLE WHERE group_id=:groupId"))
+    void deleteMessagesOfGroup(String groupId);
 }

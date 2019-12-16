@@ -1,6 +1,7 @@
 package com.WowChat.ModalBottomSheet;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,14 +33,16 @@ import retrofit2.Response;
 
 public class AddMemberBottomSheetDialog extends BottomSheetDialogFragment {
 
-    private String groupId;
+    private String groupId,myId;
     public ArrayList<UserInfoTable> selectedFriends,friends,allFriends;
     public  ArrayList<User> members;
     public ArrayList<Boolean> selectedOrNot;
     TextView done;
-    public AddMemberBottomSheetDialog(String groupId,ArrayList<User> members) {
+    public AddMemberBottomSheetDialog(String groupId,ArrayList<User> members,String myId) {
         this.groupId=groupId;
         this.members=members;
+        this.myId=myId;
+
 
     }
 
@@ -116,7 +119,7 @@ public class AddMemberBottomSheetDialog extends BottomSheetDialogFragment {
 
     public void addMember(String user_id, final String group_id){
         RetrofitClient retrofitClient=new RetrofitClient();
-        Call<User> call=retrofitClient.jsonPlaceHolderApi.addMember(user_id, group_id);
+        Call<User> call=retrofitClient.jsonPlaceHolderApi.addMember(user_id, group_id,myId);
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {

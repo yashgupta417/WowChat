@@ -118,11 +118,7 @@ public class GroupMessageAdapter extends ListAdapter<GroupMessageTable,GroupMess
 
     @Override
     public void onBindViewHolder(@NonNull GroupMessageAdapter.MyViewHolder myViewHolder, int i) {
-        if(getItem(i).getEvent()!=null && !getItem(i).getEvent().isEmpty()){
-            myViewHolder.event.setText(getItem(i).getEvent());
-        }else {
-            myViewHolder.event.setVisibility(View.GONE);
-        }
+
 
         if(i!=0 && getItem(i).getDateofmessaging().equals(getItem(i-1).getDateofmessaging())){
             myViewHolder.date.setVisibility(View.GONE);
@@ -137,6 +133,15 @@ public class GroupMessageAdapter extends ListAdapter<GroupMessageTable,GroupMess
             }else {
                 myViewHolder.date.setText(msgDate);
             }
+        }
+        if(getItem(i).getEvent()!=null && !getItem(i).getEvent().isEmpty()){
+            myViewHolder.event.setText(getItem(i).getEvent());
+            myViewHolder.linearLayoutFriend.setVisibility(View.GONE);
+            myViewHolder.linearLayoutMe.setVisibility(View.GONE);
+            myViewHolder.friendDp.setVisibility(View.GONE);
+            return;
+        }else {
+            myViewHolder.event.setVisibility(View.GONE);
         }
         if(getItem(i).getSenderId().equals(me_id)){
 

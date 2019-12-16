@@ -28,7 +28,7 @@
         android:layout_height="150dp"
         android:onClick="seemyDP"
         android:layout_marginTop="20dp"
-        android:src="@color/colorAccent"
+        android:src="@color/wowblue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"

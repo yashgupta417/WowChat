@@ -74,12 +74,17 @@ public class GroupActivity extends AppCompatActivity  {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-            case R.id.create_group: goToNewGroupActivity();
+            case R.id.create_group: goToNewGroupActivity(); break;
+            case R.id.groupSearch: goToGroupSearchActivity();break;
         }
         return true;
     }
     public void goToNewGroupActivity(){
         Intent intent=new Intent(getApplicationContext(),NewGroupActivity.class);
+        startActivity(intent);
+    }
+    public void goToGroupSearchActivity(){
+        Intent intent=new Intent(getApplicationContext(),GroupQueryActivity.class);
         startActivity(intent);
     }
 }

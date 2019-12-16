@@ -201,7 +201,7 @@ public class GroupChatActivity extends AppCompatActivity {
                     Toast.makeText(GroupChatActivity.this, response.message(), Toast.LENGTH_SHORT).show();
                     return;
                 }
-                Toast.makeText(GroupChatActivity.this, "Message sent", Toast.LENGTH_SHORT).show();
+
                 postSendingMessageWork(response.body());
             }
 
@@ -302,7 +302,6 @@ public class GroupChatActivity extends AppCompatActivity {
                     Toast.makeText(GroupChatActivity.this, response.message(), Toast.LENGTH_SHORT).show();
                     return;
                 }
-                Toast.makeText(GroupChatActivity.this, "Image Message sent", Toast.LENGTH_SHORT).show();
                 postSendingMessageWork(response.body());
             }
 

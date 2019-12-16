@@ -1,31 +1,25 @@
 package com.WowChat.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.WowChat.Adapters.MembersAdapter;
 import com.WowChat.Adapters.MemoryAdapter;
-import com.WowChat.Adapters.SelectedFriendsAdapter;
-import com.WowChat.ModalBottomSheet.AddMemberBottomSheetDialog;
-import com.WowChat.ModalBottomSheet.AddMemoryBottomSheetDialog;
-import com.WowChat.ModalBottomSheet.EditGroupBottomSheetDialog;
 import com.WowChat.R;
 import com.WowChat.Repository.GroupRepository;
 import com.WowChat.Retrofit.GroupRead;
@@ -33,7 +27,6 @@ import com.WowChat.Retrofit.MemoryRead;
 import com.WowChat.Retrofit.RetrofitClient;
 import com.WowChat.Retrofit.User;
 import com.WowChat.Room.Entities.GroupTable;
-import com.WowChat.Room.Entities.UserInfoTable;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
@@ -43,9 +36,8 @@ import pl.droidsonroids.gif.GifImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 
-public class WallActivity extends AppCompatActivity {
+public class OtherGroupActivity extends AppCompatActivity {
     String groupId;
     ImageView groupDp;
     SwipeRefreshLayout container;
@@ -57,24 +49,22 @@ public class WallActivity extends AppCompatActivity {
     boolean following;
     String myId;
     int followers;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_wall);
-
+        setContentView(R.layout.activity_other_group);
         groupId=getIntent().getStringExtra("group_id");
-        recyclerView=findViewById(R.id.wall_memories_recycleView);
-        container=findViewById(R.id.wall_container);
-        load=findViewById(R.id.wall_load);
-        toolbar=findViewById(R.id.wall_toolbar);
-        groupName=findViewById(R.id.wall_group_name);
-        groupCreatedBy=findViewById(R.id.wall_group_created_by);
-        memberCount=findViewById(R.id.wall_members_count);
-        memoryCount=findViewById(R.id.wall_memories_count);
-        followerCount=findViewById(R.id.wall_followers_count);
-        followText=findViewById(R.id.wall_follow_text);
-        followIcon=findViewById(R.id.wall_follow_icon);
+        recyclerView=findViewById(R.id.og_memories_recycleView);
+        container=findViewById(R.id.og_container);
+        load=findViewById(R.id.og_load);
+        toolbar=findViewById(R.id.og_toolbar);
+        groupName=findViewById(R.id.og_group_name);
+        groupCreatedBy=findViewById(R.id.og_group_created_by);
+        memberCount=findViewById(R.id.og_members_count);
+        memoryCount=findViewById(R.id.og_memories_count);
+        followerCount=findViewById(R.id.og_followers_count);
+        followText=findViewById(R.id.og_follow_text);
+        followIcon=findViewById(R.id.og_follow_icon);
         SharedPreferences sharedPreferences=getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
         myId=sharedPreferences.getString("id","");
         hideUI();
@@ -88,10 +78,10 @@ public class WallActivity extends AppCompatActivity {
         container.setRefreshing(false);
     }
     public void setBasicUI(GroupRead group){
-        Toolbar toolbar=findViewById(R.id.wall_toolbar);
+
         toolbar.setTitle(group.getGroupName());
         setSupportActionBar(toolbar);
-        groupDp=findViewById(R.id.wall_dp);
+        groupDp=findViewById(R.id.og_dp);
         groupName.setText(group.getGroupName());
         groupCreatedBy.setText("Created By @"+group.getPresident().getUsername());
         memberCount.setText(Integer.toString(group.getMembers().size()));
@@ -144,7 +134,7 @@ public class WallActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<GroupRead> call, Response<GroupRead> response) {
                 if(!response.isSuccessful()){
-                    Toast.makeText(WallActivity.this, response.message(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(OtherGroupActivity.this, response.message(), Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -157,13 +147,13 @@ public class WallActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<GroupRead> call, Throwable t) {
-                Toast.makeText(WallActivity.this, t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(OtherGroupActivity.this, t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     public void setUpMembersRecyclerView(final ArrayList<User> members){
-        RecyclerView recyclerView=findViewById(R.id.wall_members_recyclerView);
+        RecyclerView recyclerView=findViewById(R.id.og_members_recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
         recyclerView.setHasFixedSize(true);
         final MembersAdapter adapter=new MembersAdapter(this,members);
@@ -195,7 +185,7 @@ public class WallActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<MemoryRead>> call, Response<List<MemoryRead>> response) {
                 if(!response.isSuccessful()){
-                    Toast.makeText(WallActivity.this, response.message(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(OtherGroupActivity.this, response.message(), Toast.LENGTH_SHORT).show();
                     return;
                 }
                 setUpMemoriesAdapter(new ArrayList<MemoryRead>(response.body()));
@@ -221,40 +211,6 @@ public class WallActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
-    public void editGroup(View view){
-        EditGroupBottomSheetDialog dialog=new EditGroupBottomSheetDialog(groupId);
-        dialog.show(getSupportFragmentManager(),"editGroupBottomSheetDialog");
-        dialog.setOnImageUpdatedListener(new EditGroupBottomSheetDialog.OnImageUpdatedListener() {
-            @Override
-            public void onGroupDpUpdated(String image) {
-                Glide.with(getApplicationContext()).load(image).placeholder(R.drawable.loadingc).into(groupDp);
-            }
-        });
-    }
-
-    public void addMember(View view){
-
-        AddMemberBottomSheetDialog dialog = new AddMemberBottomSheetDialog(groupId, group.getMembers(),myId);
-        dialog.show(getSupportFragmentManager(), "addMemberBottomSheetDialog");
-        dialog.setOnMembersAddedListener(new AddMemberBottomSheetDialog.OnMembersAddedListener() {
-            @Override
-            public void onGroupMembersAdded(ArrayList<UserInfoTable> newMembers) {
-                for(UserInfoTable newMember : newMembers){
-                    members.add(new User(Integer.parseInt(newMember.getPersonId()),newMember.getPersonUsername(),
-                            newMember.getPersonFirstName(),newMember.getPersonLastName(),newMember.getPersonImage()));
-                }
-                setUpMembersRecyclerView(members);
-            }
-        });
-
-    }
-
-    public void addMemory(View view){
-        SharedPreferences preferences=getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
-        String myId=preferences.getString("id",null);
-        AddMemoryBottomSheetDialog dialog=new AddMemoryBottomSheetDialog(groupId,myId);
-        dialog.show(getSupportFragmentManager(),"add_memory_dialog");
-    }
     public void followWork(View view){
         following=!following;
         if(following){
@@ -269,15 +225,14 @@ public class WallActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 if(!response.isSuccessful()){
-                    Toast.makeText(WallActivity.this, response.message(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(OtherGroupActivity.this, response.message(), Toast.LENGTH_SHORT).show();
                     return;
                 }
-
             }
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
-                Toast.makeText(WallActivity.this, t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(OtherGroupActivity.this, t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

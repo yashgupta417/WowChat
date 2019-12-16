@@ -66,6 +66,7 @@ public class MyRepository {
             @Override
             protected Void doInBackground(Void... voids) {
                 userInfoDao.deleteChat(id);
+                messageDao.deleteMessagesOfChat(id);
                 return null;
             }
         }.execute();
