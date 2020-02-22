@@ -22,6 +22,7 @@ import com.WowChat.Activities.NewGroupActivity;
 import com.WowChat.LoadingDialog;
 import com.WowChat.R;
 import com.WowChat.Repository.GroupRepository;
+import com.WowChat.Repository.MyRepository;
 import com.WowChat.Retrofit.GroupMessage;
 import com.WowChat.Retrofit.GroupRead;
 import com.WowChat.Retrofit.RetrofitClient;
@@ -127,10 +128,10 @@ public class EditGroupBottomSheetDialog extends BottomSheetDialogFragment {
                     dismiss();
                 }
                 GroupRead group=response.body();
-                GroupRepository repository=new GroupRepository(getActivity().getApplication());
-                repository.insertOrUpdateGroup(Integer.toString(group.getGroupId()),group.getGroupName(),group.getGroupImage());
-                new GroupRepository(getActivity().getApplication()).insertOrUpdateGroup(
-                        Integer.toString(group.getGroupId()),group.getGroupName(),group.getGroupImage());
+                //GroupRepository repository=new GroupRepository(getActivity().getApplication());
+                //repository.insertOrUpdateGroup(Integer.toString(group.getGroupId()),group.getGroupName(),group.getGroupImage());
+                MyRepository repository=new MyRepository(getActivity().getApplication());
+                repository.updateImage(group.getGroupImage(),Integer.toString(group.getGroupId()));
                 mListener.onGroupDpUpdated(group.getGroupImage());
                 Toast.makeText(getContext(), "Group DP changed", Toast.LENGTH_SHORT).show();
                 dismiss();

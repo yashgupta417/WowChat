@@ -58,11 +58,14 @@ import retrofit2.Response;
 public class NewGroupActivity extends AppCompatActivity {
     EditText groupNameEditText;
     ArrayList<UserInfoTable> selectedFriends;
+    String myId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_group);
         groupNameEditText=findViewById(R.id.groupNameEditText);
+        SharedPreferences sharedPreferences=getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
+        myId=sharedPreferences.getString("id",null);
 
         final ArrayList<Boolean> selectedOrNot=new ArrayList<Boolean>();
         selectedFriends=new ArrayList<UserInfoTable>();
@@ -163,14 +166,8 @@ public class NewGroupActivity extends AppCompatActivity {
             Toast.makeText(this, "Select Friends First", Toast.LENGTH_SHORT).show();
             return;
         }
-        SharedPreferences sharedPreferences=getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
-        final String id_string=sharedPreferences.getString("id",null);
-        Integer id=Integer.parseInt(id_string);
-        UserInfoTable me=new UserInfoTable(null,null,null,null,null
-                        ,id_string,null,null,null,null);
-        selectedFriends.add(0,me);
 
-        GroupWrite newGroup=new GroupWrite(groupName,null,null,id,null);
+        GroupWrite newGroup=new GroupWrite(groupName,null,null,Integer.parseInt(myId),null);
         RetrofitClient retrofitClient=new RetrofitClient();
         Call<GroupWrite> call=retrofitClient.jsonPlaceHolderApi.createGroup(newGroup);
 
@@ -184,16 +181,16 @@ public class NewGroupActivity extends AppCompatActivity {
                     return;
                 }
                 GroupWrite group=response.body();
-                GroupRepository repository=new GroupRepository(getApplication());
-                repository.insertOrUpdateGroup(Integer.toString(group.getGroupId()),group.getGroupName(),group.getGroupImage());
+                //GroupRepository repository=new GroupRepository(getApplication());
+                //repository.insertOrUpdateGroup(Integer.toString(group.getGroupId()),group.getGroupName(),group.getGroupImage());
+                updateGroupDp(Integer.toString(group.getGroupId()),image);
 
-
-                addMember(selectedFriends.get(0).getPersonId(),Integer.toString(group.getGroupId()));
             }
 
             @Override
             public void onFailure(Call<GroupWrite> call, Throwable t) {
                 Toast.makeText(NewGroupActivity.this, t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                dialog.hideDialog();
             }
         });
     }
@@ -211,8 +208,9 @@ public class NewGroupActivity extends AppCompatActivity {
                 }
                 selectedFriends.remove(0);
                 if(selectedFriends.size()==0){
-                    updateGroupDp(group_id,image);
-
+                    dialog.hideDialog();
+                    Toast.makeText(NewGroupActivity.this, "Group Created", Toast.LENGTH_SHORT).show();
+                    finish();
                 }else{
                     addMember(selectedFriends.get(0).getPersonId(),group_id);
                 }
@@ -221,6 +219,32 @@ public class NewGroupActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<User> call, Throwable t) {
                 Toast.makeText(NewGroupActivity.this, t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                dialog.hideDialog();
+            }
+        });
+    }
+    public void addMe(final String group_id){
+
+        //Integer id=Integer.parseInt(id_string);
+        //UserInfoTable me=new UserInfoTable(null,null,null,null,null
+          ///      ,id_string,null,null,null,null);
+
+        RetrofitClient retrofitClient=new RetrofitClient();
+        Call<User> call=retrofitClient.jsonPlaceHolderApi.addMember(myId, group_id,myId);
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if(!response.isSuccessful()){
+                    Toast.makeText(NewGroupActivity.this, response.message(), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                addMember(selectedFriends.get(0).getPersonId(),group_id);
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Toast.makeText(NewGroupActivity.this, t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                dialog.hideDialog();
             }
         });
     }
@@ -254,9 +278,12 @@ public class NewGroupActivity extends AppCompatActivity {
                 startActivityForResult(intent,1);
 
             }
+        }else {
+            Intent intent=new Intent(getApplicationContext(),GalleryActivity.class);
+            startActivityForResult(intent,1);
         }
     }
-    public void updateGroupDp(String group_id,Uri image){
+    public void updateGroupDp(final String group_id, Uri image){
 
         File file = new File(image.toString());
         File compressimagefile=null;
@@ -275,21 +302,27 @@ public class NewGroupActivity extends AppCompatActivity {
         call.enqueue(new Callback<GroupRead>() {
             @Override
             public void onResponse(Call<GroupRead> call, Response<GroupRead> response) {
-                dialog.hideDialog();
+
                 if(!response.isSuccessful()){
                     Toast.makeText(NewGroupActivity.this, response.message(), Toast.LENGTH_SHORT).show();
                     finish();
                 }
                 GroupRead group=response.body();
-                GroupRepository repository=new GroupRepository(getApplication());
-                repository.insertOrUpdateGroup(Integer.toString(group.getGroupId()),group.getGroupName(),group.getGroupImage());
-                Toast.makeText(NewGroupActivity.this, "Group Created", Toast.LENGTH_SHORT).show();
-                finish();
+                //GroupRepository repository=new GroupRepository(getApplication());
+                //repository.insertOrUpdateGroup(Integer.toString(group.getGroupId()),group.getGroupName(),group.getGroupImage());
+                UserInfoTable chat=new UserInfoTable(group_id,group.getGroupName(),
+                        "","",group.getGroupImage(),
+                        group_id,"","","","",1);
+                MyRepository repository=new MyRepository(getApplication());
+                repository.updateOrCreateUserInfo(chat);
+                addMe(Integer.toString(group.getGroupId()));
+
             }
 
             @Override
             public void onFailure(Call<GroupRead> call, Throwable t) {
                 Toast.makeText(NewGroupActivity.this, t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                dialog.hideDialog();
             }
         });
     }

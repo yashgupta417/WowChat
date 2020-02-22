@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 
 import com.WowChat.R;
 import com.WowChat.Repository.GroupRepository;
+import com.WowChat.Repository.MyRepository;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 public class GroupBottomSheetDialog extends BottomSheetDialogFragment {
@@ -40,6 +41,8 @@ public class GroupBottomSheetDialog extends BottomSheetDialogFragment {
     public void deleteGroup(){
         GroupRepository repository=new GroupRepository(getActivity().getApplication());
         repository.deleteGroup(groupId);
+        MyRepository repository1=new MyRepository(getActivity().getApplication());
+        repository1.setUnseenCountInGroup(groupId);
     }
     @Override
     public void onAttach(Context context) {

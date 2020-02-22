@@ -1,16 +1,15 @@
 package com.WowChat.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.view.ActionMode;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,10 +18,8 @@ import com.WowChat.Adapters.GroupAdapter;
 import com.WowChat.ModalBottomSheet.GroupBottomSheetDialog;
 import com.WowChat.R;
 import com.WowChat.Repository.GroupRepository;
-import com.WowChat.Repository.MyRepository;
 import com.WowChat.Room.Entities.GroupTable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class GroupActivity extends AppCompatActivity  {
@@ -75,7 +72,8 @@ public class GroupActivity extends AppCompatActivity  {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.create_group: goToNewGroupActivity(); break;
-            case R.id.groupSearch: goToGroupSearchActivity();break;
+          //  case R.id.groupSearch: goToGroupSearchActivity();break;
+           // case R.id.feeds:openFeeds();break;
         }
         return true;
     }
@@ -83,8 +81,5 @@ public class GroupActivity extends AppCompatActivity  {
         Intent intent=new Intent(getApplicationContext(),NewGroupActivity.class);
         startActivity(intent);
     }
-    public void goToGroupSearchActivity(){
-        Intent intent=new Intent(getApplicationContext(),GroupQueryActivity.class);
-        startActivity(intent);
-    }
+
 }

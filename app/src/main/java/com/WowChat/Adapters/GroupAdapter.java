@@ -2,6 +2,7 @@ package com.WowChat.Adapters;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,10 +61,12 @@ public class GroupAdapter extends ListAdapter<GroupTable,GroupAdapter.MyViewHold
     public class MyViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
         TextView textView;
+        TextView unseenCountTextView;
         public MyViewHolder(@NonNull View itemView, final GroupAdapter.onItemClickListener listener) {
             super(itemView);
             imageView=itemView.findViewById(R.id.group_image);
             textView=itemView.findViewById(R.id.group_name);
+            unseenCountTextView=itemView.findViewById(R.id.g_unseen_count);
             itemView.setOnClickListener(
                     new View.OnClickListener() {
                         @Override
@@ -108,7 +111,19 @@ public class GroupAdapter extends ListAdapter<GroupTable,GroupAdapter.MyViewHold
         if(getItem(i).getImage()!=null){
             Glide.with(context).load(getItem(i).getImage()).placeholder(R.drawable.loadingc).into(myViewHolder.imageView);
         }
+        Integer unseenCount=getItem(i).getUnseenMessages();
+        if(unseenCount==null || unseenCount==0){
+            //myViewHolder.parent.setBackgroundColor(Color.parseColor("#FFFFFF"));
+            myViewHolder.unseenCountTextView.setText("You are Up to Date");
+            myViewHolder.unseenCountTextView.setTypeface(null, Typeface.NORMAL);
+            myViewHolder.unseenCountTextView.setTextColor(Color.GRAY);
 
+        }else{
+            //myViewHolder.parent.setBackgroundColor(Color.parseColor("#1100BFFF"));
+            myViewHolder.unseenCountTextView.setText(Integer.toString(unseenCount)+" New Messages");
+            myViewHolder.unseenCountTextView.setTypeface(null, Typeface.BOLD);
+            myViewHolder.unseenCountTextView.setTextColor(Color.parseColor("#00BFFF"));
+        }
     }
 
     @Override

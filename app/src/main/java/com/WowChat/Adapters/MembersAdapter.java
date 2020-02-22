@@ -42,11 +42,14 @@ public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MyViewHo
     public static class MyViewHolder extends RecyclerView.ViewHolder{
         CircleImageView imageView;
         TextView username;
+        TextView name;
 
         public MyViewHolder(@NonNull View itemView, final onItemClickListener listener) {
             super(itemView);
-            imageView=itemView.findViewById(R.id.wall_member_image);
-            username=itemView.findViewById(R.id.wall_member_username);
+            imageView=itemView.findViewById(R.id.memberImageView);
+            username=itemView.findViewById(R.id.member_username);
+            name=itemView.findViewById(R.id.member_name);
+
 
 
             itemView.setOnClickListener(new View.OnClickListener(){
@@ -74,6 +77,7 @@ public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.MyViewHo
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int i) {
         holder.username.setText("@"+members.get(i).getUsername());
+        holder.name.setText(members.get(i).getFirstName()+" "+members.get(i).getLastName());
         if(members.get(i).getImage()!=null && members.get(i).getImage()!=""){
             Glide.with(context).load(members.get(i).getImage()).placeholder(R.drawable.loadingc).into(holder.imageView);
         }

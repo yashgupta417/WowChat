@@ -30,4 +30,10 @@ public interface GroupMessageDao {
 
     @Query(("DELETE FROM GROUPMESSAGETABLE WHERE group_id=:groupId"))
     void deleteMessagesOfGroup(String groupId);
+
+    @Query("SELECT * FROM GroupMessageTable WHERE group_id=:group_id AND status='notSeen' ")
+    LiveData<List<GroupMessageTable>> getUnseenMessages(String group_id);//status =Sent
+
+    @Query("SELECT COUNT(*) From GROUPMESSAGETABLE WHERE group_id=:group_id AND status='notSeen'")
+    int countUnseenMessages(String group_id);
 }

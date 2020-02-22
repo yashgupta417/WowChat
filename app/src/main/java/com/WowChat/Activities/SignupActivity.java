@@ -172,7 +172,7 @@ public class SignupActivity extends AppCompatActivity {
                         }
 
                         String token = task.getResult().getToken();
-                        SharedPreferences sharedPreferences= com.WowChat.Activities.SignupActivity.this.getSharedPreferences(getPackageName(),Context.MODE_PRIVATE);
+                        SharedPreferences sharedPreferences= getSharedPreferences(getPackageName(),Context.MODE_PRIVATE);
                         String user_id=sharedPreferences.getString("id","");
                         FCMToken fcmToken=new FCMToken(token,"FCM",user_id);
                         RetrofitClient retrofitClient=new RetrofitClient();

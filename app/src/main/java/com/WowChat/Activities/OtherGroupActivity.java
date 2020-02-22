@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.WowChat.Adapters.ImageAdapter;
 import com.WowChat.Adapters.MembersAdapter;
 import com.WowChat.Adapters.MemoryAdapter;
 import com.WowChat.R;
@@ -207,8 +208,16 @@ public class OtherGroupActivity extends AppCompatActivity {
         memoryCount.setText(Integer.toString(memories.size()));
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(this,3));
-        MemoryAdapter adapter=new MemoryAdapter(this,memories);
+        final MemoryAdapter adapter=new MemoryAdapter(this,memories);
         recyclerView.setAdapter(adapter);
+        adapter.setOnItemClickListener(new ImageAdapter.onItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                Intent intent=new Intent(getApplicationContext(),GalleryActivity.class);
+                intent.putExtra("uri",adapter.memories.get(position).getImage());
+                startActivity(intent);
+            }
+        });
     }
 
     public void followWork(View view){

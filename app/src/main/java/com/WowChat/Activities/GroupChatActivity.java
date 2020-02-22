@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.WowChat.Adapters.GroupMessageAdapter;
 import com.WowChat.R;
 import com.WowChat.Repository.GroupRepository;
+import com.WowChat.Repository.MyRepository;
 import com.WowChat.Retrofit.GroupMessage;
 import com.WowChat.Retrofit.Message;
 import com.WowChat.Retrofit.RetrofitClient;
@@ -57,7 +58,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class GroupChatActivity extends AppCompatActivity {
-    String groupId,myId,myName,myImage;
+    String groupName,groupImage,groupId,myId,myName,myImage;
     EditText editText;
     ImageView imageSend,textSend;
     @Override
@@ -78,15 +79,18 @@ public class GroupChatActivity extends AppCompatActivity {
         myName=sharedPreferences.getString("first_name",null);
         myImage=sharedPreferences.getString("image",null);
         groupId=getIntent().getStringExtra("group_id");
+        groupName=getIntent().getStringExtra("name");
+        groupImage=getIntent().getStringExtra("image");
 
         GroupRepository repository=new GroupRepository(getApplication());
+        /*
         repository.getGroupDetail(groupId).observe(this, new Observer<GroupTable>() {
             @Override
             public void onChanged(GroupTable groupTable) {
                 showBasicUI(groupTable.getName(),groupTable.getImage());
             }
-        });
-
+        });*/
+        showBasicUI(groupName,groupImage);
 
         //*************************************
 
@@ -131,6 +135,7 @@ public class GroupChatActivity extends AppCompatActivity {
         groupNameTextView.setText(groupName);
         CircleImageView dp=findViewById(R.id.group_dp);
         Glide.with(this).load(groupImage).diskCacheStrategy(DiskCacheStrategy.DATA).placeholder(R.drawable.loadingc).into(dp);
+        seenTheUnseenMessages();
     }
     public void setUpEditTextListener(){
         editText.addTextChangedListener(new TextWatcher() {
@@ -164,6 +169,8 @@ public class GroupChatActivity extends AppCompatActivity {
     public void goToWall(View view){
         Intent intent=new Intent(getApplicationContext(), WallActivity.class);
         intent.putExtra("group_id",groupId);
+        intent.putExtra("group_name",groupName);
+        intent.putExtra("group_image",groupImage);
         startActivity(intent);
     }
     public void sendGMsg(View view){
@@ -191,7 +198,8 @@ public class GroupChatActivity extends AppCompatActivity {
 
         GroupRepository repository=new GroupRepository(getApplication());
         repository.insertMessage(groupMessageTable);
-
+        MyRepository repository1=new MyRepository(getApplication());
+        repository1.updateLatestMessage(text,date,timePrecise,amorpm,groupId);
         RetrofitClient retrofitClient=new RetrofitClient();
         Call<GroupMessage> call=retrofitClient.jsonPlaceHolderApi.sendGroupMessage(groupMessage);
         call.enqueue(new Callback<GroupMessage>() {
@@ -222,8 +230,10 @@ public class GroupChatActivity extends AppCompatActivity {
             }else{
                 Intent intent=new Intent(getApplicationContext(),GalleryActivity.class);
                 startActivityForResult(intent,1);
-
             }
+        }else{
+            Intent intent=new Intent(getApplicationContext(),GalleryActivity.class);
+            startActivityForResult(intent,1);
         }
     }
     @Override
@@ -273,6 +283,8 @@ public class GroupChatActivity extends AppCompatActivity {
 
         GroupRepository repository=new GroupRepository(getApplication());
         repository.insertMessage(groupMessageTable);
+        MyRepository myRepository=new MyRepository(getApplication());
+        myRepository.updateLatestMessage("",date,timePrecise,amorpm,groupId);
 
         File file = new File(image);
         File compressimagefile = null;
@@ -323,4 +335,17 @@ public class GroupChatActivity extends AppCompatActivity {
 
     }
 
+    public void seenTheUnseenMessages() {
+        final GroupRepository repository = new GroupRepository(getApplication());
+        repository.getUnseenMessages(groupId).observe(this, new Observer<List<GroupMessageTable>>() {
+            @Override
+            public void onChanged(List<GroupMessageTable> groupMessageTables) {
+                for(int i=0;i<groupMessageTables.size();i++){
+                    repository.updateMessageStatus(groupMessageTables.get(i).getId(),"Seen");
+                    MyRepository repository1=new MyRepository(getApplication());
+                    repository1.setUnseenCountInGroup(groupId);
+                }
+            }
+        });
+    }
 }

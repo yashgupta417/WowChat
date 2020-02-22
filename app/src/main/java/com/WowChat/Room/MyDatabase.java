@@ -18,7 +18,7 @@ import com.WowChat.Room.Entities.GroupTable;
 import com.WowChat.Room.Entities.MessageTable;
 import com.WowChat.Room.Entities.UserInfoTable;
 
-@Database(entities = {UserInfoTable.class, MessageTable.class, GroupTable.class, GroupMessageTable.class},version=25,exportSchema = false)
+@Database(entities = {UserInfoTable.class, MessageTable.class, GroupTable.class, GroupMessageTable.class},version=28,exportSchema = false)
 public abstract class MyDatabase extends RoomDatabase {
     private static MyDatabase instance;
     public abstract UserInfoDao chatDao();
@@ -40,11 +40,32 @@ public abstract class MyDatabase extends RoomDatabase {
                     " ADD event TEXT DEFAULT('')");
         }
     };
+    static  final Migration MIGRATION__25_28=new Migration(25,28) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE UserInfoTable" +
+                    " ADD isGroup INTEGER DEFAULT '0' ");
+        }
+    };
+    static  final Migration MIGRATION__26_28=new Migration(26,28) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE UserInfoTable" +
+                    " ADD isGroup INTEGER DEFAULT '0' ");
+        }
+    };
+    static  final Migration MIGRATION__27_28=new Migration(27,28) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE UserInfoTable" +
+                    " ADD isGroup INTEGER DEFAULT '0' ");
+        }
+    };
     public static synchronized MyDatabase getInstance(Context context){
         if(instance==null){
             instance= Room.databaseBuilder(context.getApplicationContext(),
                         MyDatabase.class,"my_database")
-                    .addMigrations(MIGRATION_22_24,MIGRATION__24_25)
+                    .addMigrations(MIGRATION_22_24,MIGRATION__24_25,MIGRATION__25_28,MIGRATION__26_28,MIGRATION__27_28)
                     .build();
         }
         return instance;

@@ -105,7 +105,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.MyViewHolder
                 MediaStore.Images.Media.BUCKET_DISPLAY_NAME };
 
         cursor = context.getContentResolver().query(uri, projection, null,
-                null, null);
+                null,MediaStore.Images.Media.DATE_TAKEN+" DESC");
 
         column_index_data = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
         column_index_folder_name = cursor

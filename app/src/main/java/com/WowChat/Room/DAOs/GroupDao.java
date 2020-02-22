@@ -28,7 +28,6 @@ public interface GroupDao {
     @Query("SELECT * FROM GROUPTABLE WHERE id=:id")
     LiveData<GroupTable> getGroupDetails(String id);
 
-
-
-
+    @Query("UPDATE grouptable SET unseenMessages=:count WHERE id=:groupId")
+    void setUnseenCount(Integer count,String groupId);
 }

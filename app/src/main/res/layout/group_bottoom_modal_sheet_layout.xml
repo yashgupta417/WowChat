@@ -8,8 +8,8 @@
     android:id="@+id/g_bottomsheet_delete"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="Delete Group"
-    android:textStyle="bold"
+    android:text="Delete All Messages in this Group"
+
     android:textColor="#F00"
     android:textSize="18sp" />
 </LinearLayout>

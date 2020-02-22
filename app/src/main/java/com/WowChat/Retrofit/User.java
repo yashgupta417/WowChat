@@ -26,7 +26,6 @@ public class User {
     @SerializedName("password")
     @Expose
     private String password;
-
     @SerializedName("image")
     @Expose
     private String image;

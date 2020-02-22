@@ -135,4 +135,5 @@ public class GroupMessageTable {
     public void setEvent(String event) {
         this.event = event;
     }
+
 }

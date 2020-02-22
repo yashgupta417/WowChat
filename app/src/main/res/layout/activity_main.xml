@@ -85,7 +85,7 @@
         android:layout_marginBottom="40dp"
         android:src="@drawable/ic_group_2"
         android:onClick="goToGroups"
-        app:backgroundTint="#FFF"
+        app:backgroundTint="#CC00BFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"

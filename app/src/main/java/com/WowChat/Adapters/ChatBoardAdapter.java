@@ -2,10 +2,12 @@ package com.WowChat.Adapters;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -69,6 +71,7 @@ public class ChatBoardAdapter extends ListAdapter<UserInfoTable, ChatBoardAdapte
         TextView latestMessageTextView;
         CircleImageView circleImageView;
         TextView timeTextView;
+        ImageView isGroup;
         TextView unseenCountTextview;
         ConstraintLayout parent;
 
@@ -81,6 +84,7 @@ public class ChatBoardAdapter extends ListAdapter<UserInfoTable, ChatBoardAdapte
             timeTextView=itemView.findViewById(R.id.chat_time);
             unseenCountTextview=itemView.findViewById(R.id.chat_unseen_msg_count);
             lastNameTextView=itemView.findViewById(R.id.last_name);
+            isGroup=itemView.findViewById(R.id.isgroup);
 
             itemView.setOnClickListener(
                     new View.OnClickListener() {
@@ -123,6 +127,11 @@ public class ChatBoardAdapter extends ListAdapter<UserInfoTable, ChatBoardAdapte
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
         myViewHolder.nameTextView.setText(getItem(i).getPersonFirstName());
         myViewHolder.lastNameTextView.setText(getItem(i).getPersonLastName());
+        if(getItem(i).getIsGroup()==1){
+            myViewHolder.isGroup.setVisibility(View.VISIBLE);
+        }else {
+            myViewHolder.isGroup.setVisibility(View.GONE);
+        }
         if(getItem(i).getLatestMesage()==null || getItem(i).getLatestMesage().equals("")) {
             myViewHolder.latestMessageTextView.setText("Image");
 
@@ -156,12 +165,14 @@ public class ChatBoardAdapter extends ListAdapter<UserInfoTable, ChatBoardAdapte
             myViewHolder.unseenCountTextview.setVisibility(View.INVISIBLE);
             myViewHolder.unseenCountTextview.setText("0");
             myViewHolder.timeTextView.setTextColor(Color.GRAY);
+            myViewHolder.latestMessageTextView.setTypeface(null, Typeface.NORMAL);
 
         }else{
             //myViewHolder.parent.setBackgroundColor(Color.parseColor("#1100BFFF"));
             myViewHolder.timeTextView.setTextColor(Color.parseColor("#00BFFF"));
             myViewHolder.unseenCountTextview.setVisibility(View.VISIBLE);
             myViewHolder.unseenCountTextview.setText(Integer.toString(unseenCount));
+            myViewHolder.latestMessageTextView.setTypeface(null, Typeface.BOLD);
         }
 
         if(!getItem(i).getPersonImage().equals("")){

@@ -88,7 +88,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         //COMBINING REQUIRED DATA
         MessageTable messageTable=new MessageTable(messsage_id,text,sender_id,recipient_id,date,time,amorpm,msgImage);
         messageTable.setStatus("Sent");
-        UserInfoTable userInfoTable=new UserInfoTable(username,firstName,lastName,email,dp,sender_id,text,time,date,amorpm);
+        UserInfoTable userInfoTable=new UserInfoTable(username,firstName,lastName,email,dp,sender_id,text,time,date,amorpm,0);
 
         //STORING MESSAGE LOCALLY
         MyRepository repository=new MyRepository(this.getApplication());
@@ -128,14 +128,30 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String msgImage=remoteMessage.getData().get("image");
 
         Log.i("************","event: "+event);
+        if(text!=null){
+            showNotification(groupName,text);
+        }else{
+            showNotification(groupName,event);
+            text=event;
+        }
         //COMBINING REQUIRED DATA
         GroupMessageTable groupMessageTable=new GroupMessageTable(groupMessageId,text,event,msgImage,senderId,senderName,senderImage,groupId,
-                            date,time,amorpm,null);
+                            date,time,amorpm,"notSeen");
+        UserInfoTable userInfoTable=new UserInfoTable(groupId,groupName,"","",groupImage
+                ,groupId,text,time,date,amorpm,1);
 
         //STORING MESSAGE LOCALLY
-        GroupRepository repository=new GroupRepository(getApplication());
-        repository.insertOrUpdateGroup(groupId,groupName,groupImage);
-        repository.insertMessage(groupMessageTable);
+        GroupRepository groupRepository=new GroupRepository(getApplication());
+        groupRepository.insertMessage(groupMessageTable);
+
+
+        MyRepository repository=new MyRepository(this.getApplication());
+        repository.updateOrCreateUserInfo(userInfoTable);
+        repository.setUnseenCountInGroup(groupId);
+        //repository.insertOrUpdateGroup(groupId,groupName,groupImage);
+        //repository.setUnseenCount(groupId);
+
+
 
     }
     public void tellServerThatMessageReceived(String messsage_id){

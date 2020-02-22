@@ -167,7 +167,8 @@ public class GroupMessageAdapter extends ListAdapter<GroupMessageTable,GroupMess
 
         }
         else{
-            if(i==0 || !getItem(i).getSenderId().equals(getItem(i-1).getSenderId())){
+            if(i==0 || !getItem(i).getSenderId().equals(getItem(i-1).getSenderId())
+            || (getItem(i-1).getEvent()!=null && !getItem(i-1).getEvent().isEmpty())){
                 myViewHolder.friendDp.setVisibility(View.VISIBLE);
                 myViewHolder.friendName.setVisibility(View.VISIBLE);
                 myViewHolder.friendName.setText(getItem(i).getSenderName());

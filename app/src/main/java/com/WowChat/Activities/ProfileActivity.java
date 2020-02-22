@@ -25,6 +25,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.WowChat.BuildConfig;
 import com.WowChat.Repository.GroupRepository;
 import com.WowChat.ViewModel.MainAcitivityViewModel;
 import com.bumptech.glide.Glide;
@@ -52,7 +53,7 @@ public class ProfileActivity extends AppCompatActivity {
     String imageURL;
     public CircleImageView circleImageView;
     public TextView name;
-    public TextView username;
+    public TextView username,version;
     public GifImageView load;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +69,8 @@ public class ProfileActivity extends AppCompatActivity {
         name=findViewById(R.id.profile_name);
         username=findViewById(R.id.profile_username);
         load=findViewById(R.id.dp_upload_gif);
+        version=findViewById(R.id.version);
+
     }
 
     public void setUIValues(){
@@ -76,7 +79,7 @@ public class ProfileActivity extends AppCompatActivity {
         String lName=sharedPreferences.getString("last_name","");
         String uName=sharedPreferences.getString("username","");
         imageURL=sharedPreferences.getString("image","");
-
+        version.setText(BuildConfig.VERSION_NAME);
         name.setText(fName+" "+lName);
         username.setText("@"+uName);
         if(!imageURL.equals("")){
@@ -120,14 +123,13 @@ public class ProfileActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)!=PackageManager.PERMISSION_GRANTED){
                 requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},2);
-                Log.i("me","inside if");
-
             }else{
-                Log.i("me","inside else");
                 Intent intent=new Intent(getApplicationContext(),GalleryActivity.class);
                 startActivityForResult(intent,1);
-
             }
+        }else{
+            Intent intent=new Intent(getApplicationContext(),GalleryActivity.class);
+            startActivityForResult(intent,1);
         }
     }
 
@@ -173,9 +175,9 @@ public class ProfileActivity extends AppCompatActivity {
     }
     public void showAlertDialog(View view){
         new AlertDialog.Builder(this)
-                .setTitle("LOGOUT")
-                .setMessage("This will delete all your chats in your phone.Are you Sure?")
-                .setPositiveButton("Logout", new DialogInterface.OnClickListener() {
+                .setTitle("DELETE ACCOUNT")
+                .setMessage("This will delete all your chats permanently.Are you Sure?")
+                .setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         logout();
@@ -203,7 +205,7 @@ public class ProfileActivity extends AppCompatActivity {
                     viewModel.deleteMessagesAndUserInfo();
                     GroupRepository groupRepository=new GroupRepository(getApplication());
                     groupRepository.deleteAllGroupsAndMessages();
-                    Toast.makeText(com.WowChat.Activities.ProfileActivity.this, "Logged out Successfully", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(com.WowChat.Activities.ProfileActivity.this, "Logged out Successfully", Toast.LENGTH_SHORT).show();
                     Intent intent=new Intent(getApplicationContext(),LoginActivity.class);
                     startActivity(intent);
                 }

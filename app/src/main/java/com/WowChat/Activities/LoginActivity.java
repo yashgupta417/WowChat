@@ -141,7 +141,7 @@ public class LoginActivity extends AppCompatActivity {
                             @Override
                             public void onResponse(Call<FCMToken> call, Response<FCMToken> response) {
                                 if(!response.isSuccessful()){
-                                    Toast.makeText(com.WowChat.Activities.LoginActivity.this, "FCM Token not updated", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(LoginActivity.this, "FCM Token not updated", Toast.LENGTH_SHORT).show();
                                     return;
                                 }
                                 //Toast.makeText(com.WowChat.Activities.LoginActivity.this, "FCM token uploaded", Toast.LENGTH_SHORT).show();

@@ -108,6 +108,7 @@ public class ChatActivity extends AppCompatActivity {
         imageM=findViewById(R.id.image_message);
         lastSeen=findViewById(R.id.last_seen);
         textView.setText(friendFirstName);
+        lastSeen.setText("checking last seen....");
         if(friendImageURL.equals("")){
             Glide.with(this).load(R.drawable.user_img).into(circleImageView);
         }else{
@@ -325,7 +326,7 @@ public class ChatActivity extends AppCompatActivity {
         Message message=new Message(id,text,me_id,friendId,date,timePrecise,amorpm,null);
 
         UserInfoTable userInfoTable=new UserInfoTable(friendUsername, friendFirstName, friendLastName, friendEmail, friendImageURL,
-                Integer.toString(friendId), text, timePrecise, date, amorpm);
+                Integer.toString(friendId), text, timePrecise, date, amorpm,0);
         viewModel.updateOrCreateUserInfo(userInfoTable);
 
         final MessageTable messageTable=new MessageTable(id,text,Integer.toString(me_id)
@@ -365,6 +366,9 @@ public class ChatActivity extends AppCompatActivity {
                 startActivityForResult(intent,1);
 
             }
+        }else{
+            Intent intent=new Intent(getApplicationContext(),GalleryActivity.class);
+            startActivityForResult(intent,1);
         }
     }
     @Override

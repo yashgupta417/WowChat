@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.room.Update;
 
+import com.WowChat.Room.DAOs.GroupMessageDao;
 import com.WowChat.Room.DAOs.UserInfoDao;
 import com.WowChat.Room.DAOs.MessageDao;
 import com.WowChat.Room.Entities.MessageTable;
@@ -25,11 +26,13 @@ import java.util.concurrent.ExecutionException;
 public class MyRepository {
     private UserInfoDao userInfoDao;
     private MessageDao messageDao;
+    private GroupMessageDao groupMessageDao;
 
     public MyRepository(Application application){
         MyDatabase database=MyDatabase.getInstance(application);
         userInfoDao =database.chatDao();
         messageDao=database.messageDao();
+        groupMessageDao=database.groupMessageDao();
 
     }
     public LiveData<List<MessageTable>> getMessages(String friend){
@@ -145,6 +148,17 @@ public class MyRepository {
             return null;
         }
     }
+    @SuppressLint("StaticFieldLeak")
+    public void setUnseenCountInGroup(final String groupId){
+        new AsyncTask<Void,Void,Void>(){
+            @Override
+            protected Void doInBackground(Void... voids) {
+                Integer count=groupMessageDao.countUnseenMessages(groupId);
+                userInfoDao.setUnseenCount(count,groupId);
+                return null;
+            }
+        }.execute();
+    }
 
     private static class UpdateMessageStatusAsyncTask extends AsyncTask<Void,Void,Void>{
         private MessageDao messageDao;
@@ -184,11 +198,31 @@ public class MyRepository {
             String latestMessageTime=userInfoTable.getLatestMessageTime();
             String latestMessageAmorPm=userInfoTable.getLatestMessageAMorPM();
             String latestMessageDate=userInfoTable.getLatestMessagedate();
-            userInfoDao.updateOrCreateUserInfo(username,firstName,lastName,email,image,id,latestMessage,latestMessageTime,latestMessageDate,latestMessageAmorPm);
+            Integer isGroup=userInfoTable.getIsGroup();
+            userInfoDao.updateOrCreateUserInfo(username,firstName,lastName,email,image,id,latestMessage,latestMessageTime,latestMessageDate,latestMessageAmorPm,isGroup);
             return  null;
         }
     }
-
+    @SuppressLint("StaticFieldLeak")
+    public void updateImage(final String image, final String id){
+        new AsyncTask<Void,Void,Void>(){
+            @Override
+            protected Void doInBackground(Void... voids) {
+                userInfoDao.updateImage(image,id);
+                return null;
+            }
+        }.execute();
+    }
+    @SuppressLint("StaticFieldLeak")
+    public void updateLatestMessage(final String text, final String date, final String time, final String amorpm,final String id){
+        new AsyncTask<Void,Void,Void>(){
+            @Override
+            protected Void doInBackground(Void... voids) {
+                userInfoDao.updateLatestMessage(text,time,date,amorpm,id);
+                return null;
+            }
+        }.execute();
+    }
     private static class DeleteMessagesAndUserInfoAsyncTask extends AsyncTask<Void,Void,Void>{
         private UserInfoDao userInfoDao;
         private MessageDao messageDao;

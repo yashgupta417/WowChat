@@ -92,8 +92,7 @@ public class SelectedFriendsAdapter extends ListAdapter<UserInfoTable, SelectedF
                 Glide.with(context).load(getItem(i).getPersonImage()).placeholder(R.drawable.loadingc).into(myViewHolder.imageView);
             }
             myViewHolder.username.setText("@"+getItem(i).getPersonUsername());
-
-            Log.i("********",getItem(i).getPersonUsername());
+            //Log.i("********",getItem(i).getPersonUsername());
     }
 
     @Override

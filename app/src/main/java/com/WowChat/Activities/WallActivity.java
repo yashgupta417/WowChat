@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.WowChat.Adapters.ImageAdapter;
 import com.WowChat.Adapters.MembersAdapter;
 import com.WowChat.Adapters.MemoryAdapter;
 import com.WowChat.Adapters.SelectedFriendsAdapter;
@@ -46,17 +48,14 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class WallActivity extends AppCompatActivity {
-    String groupId;
-    ImageView groupDp;
-    SwipeRefreshLayout container;
+    String groupId,groupImage,groupName;
+    ImageView groupDp,addMemberButton;
     GifImageView load;
     RecyclerView recyclerView;
     Toolbar toolbar;
-    TextView groupName,groupCreatedBy,memberCount,memoryCount,followerCount,followText;
-    ImageView followIcon;
-    boolean following;
+    TextView groupNameTextView;
     String myId;
-    int followers;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,78 +63,39 @@ public class WallActivity extends AppCompatActivity {
         setContentView(R.layout.activity_wall);
 
         groupId=getIntent().getStringExtra("group_id");
-        recyclerView=findViewById(R.id.wall_memories_recycleView);
-        container=findViewById(R.id.wall_container);
+        groupName=getIntent().getStringExtra("group_name");
+        groupImage=getIntent().getStringExtra("group_image");
         load=findViewById(R.id.wall_load);
+        addMemberButton=findViewById(R.id.add_member);
         toolbar=findViewById(R.id.wall_toolbar);
-        groupName=findViewById(R.id.wall_group_name);
-        groupCreatedBy=findViewById(R.id.wall_group_created_by);
-        memberCount=findViewById(R.id.wall_members_count);
-        memoryCount=findViewById(R.id.wall_memories_count);
-        followerCount=findViewById(R.id.wall_followers_count);
-        followText=findViewById(R.id.wall_follow_text);
-        followIcon=findViewById(R.id.wall_follow_icon);
+        groupNameTextView=findViewById(R.id.groupName);
+        groupDp=findViewById(R.id.groupDp);
+
+        setBasicUI();
         SharedPreferences sharedPreferences=getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
         myId=sharedPreferences.getString("id","");
-        hideUI();
         fetchGroupDetails(0);
     }
-    public void refreshContent(){
-        container.setRefreshing(true);
-        fetchGroupDetails(1);
-    }
-    public void refreshDone(){
-        container.setRefreshing(false);
-    }
-    public void setBasicUI(GroupRead group){
+
+    public void setBasicUI(){
         Toolbar toolbar=findViewById(R.id.wall_toolbar);
-        toolbar.setTitle(group.getGroupName());
+        toolbar.setTitle(groupName);
+        toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
-        groupDp=findViewById(R.id.wall_dp);
-        groupName.setText(group.getGroupName());
-        groupCreatedBy.setText("Created By @"+group.getPresident().getUsername());
-        memberCount.setText(Integer.toString(group.getMembers().size()));
-        followerCount.setText(Integer.toString(group.getFollowers().size()));
-        following=false;
-        followers=group.getFollowers().size();
-        for(User x :group.getFollowers()){
-            if(x.getId()==Integer.parseInt(myId)){
-                following=true;
-            }
+        groupNameTextView.setText(groupName);
+        addMemberButton.setEnabled(false);
+        if(groupImage!=null){
+            Glide.with(this).load(groupImage).placeholder(R.drawable.loadingc).into(groupDp);
+            groupDp.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent=new Intent(getApplicationContext(),ImageViewerActivity.class);
+                    intent.putExtra("uri",groupImage);
+                    startActivity(intent);
+                }
+            });
         }
-        performFollowLogic();
-        if(group.getGroupImage()!=null){
-            Glide.with(this).load(group.getGroupImage()).placeholder(R.drawable.loadingc).into(groupDp);
-        }
-        container.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refreshContent();
-            }
-        });
     }
-    public void performFollowLogic(){
-        if(following){
-            followText.setText("Following");
-            //followText.setTextColor(Color.parseColor("#000000"));
-            Glide.with(this).load(R.drawable.ic_check).into(followIcon);
-        }else{
-            followText.setText("Follow");
-            //followText.setTextColor(Color.parseColor("#00BFFF"));
-            Glide.with(this).load(R.drawable.ic_add_circle_blue).into(followIcon);
-        }
-        followerCount.setText(Integer.toString(followers));
-    }
-    public void hideUI(){
-        container.setVisibility(View.INVISIBLE);
-        container.setEnabled(false);
-    }
-    public void revealUI(){
-        container.setVisibility(View.VISIBLE);
-        container.setEnabled(true);
-        load.setVisibility(View.GONE);
-    }
-    GroupRead group;
     ArrayList<User> members;
     public void fetchGroupDetails(final Integer source){
         RetrofitClient client=new RetrofitClient();
@@ -147,12 +107,12 @@ public class WallActivity extends AppCompatActivity {
                     Toast.makeText(WallActivity.this, response.message(), Toast.LENGTH_SHORT).show();
                     return;
                 }
+                load.setVisibility(View.GONE);
+                addMemberButton.setEnabled(true);
+                addMemberButton.setAlpha(1f);
 
-                group=response.body();
-                setBasicUI(group);
-                members=group.getMembers();
+                members=response.body().getMembers();
                 setUpMembersRecyclerView(members);
-                fetchMemories(source);
             }
 
             @Override
@@ -164,7 +124,7 @@ public class WallActivity extends AppCompatActivity {
 
     public void setUpMembersRecyclerView(final ArrayList<User> members){
         RecyclerView recyclerView=findViewById(R.id.wall_members_recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
         recyclerView.setHasFixedSize(true);
         final MembersAdapter adapter=new MembersAdapter(this,members);
         recyclerView.setAdapter(adapter);
@@ -188,38 +148,6 @@ public class WallActivity extends AppCompatActivity {
             }
         });
     }
-    public void fetchMemories(final Integer source){
-        RetrofitClient client=new RetrofitClient();
-        Call<List<MemoryRead>> call=client.jsonPlaceHolderApi.getMemories(groupId);
-        call.enqueue(new Callback<List<MemoryRead>>() {
-            @Override
-            public void onResponse(Call<List<MemoryRead>> call, Response<List<MemoryRead>> response) {
-                if(!response.isSuccessful()){
-                    Toast.makeText(WallActivity.this, response.message(), Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                setUpMemoriesAdapter(new ArrayList<MemoryRead>(response.body()));
-                if(source==0){
-                    revealUI();
-                }else if(source==1){
-                    refreshDone();
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<List<MemoryRead>> call, Throwable t) {
-
-            }
-        });
-    }
-    public void setUpMemoriesAdapter(ArrayList<MemoryRead> memories){
-        memoryCount.setText(Integer.toString(memories.size()));
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new GridLayoutManager(this,3));
-        MemoryAdapter adapter=new MemoryAdapter(this,memories);
-        recyclerView.setAdapter(adapter);
-    }
 
     public void editGroup(View view){
         EditGroupBottomSheetDialog dialog=new EditGroupBottomSheetDialog(groupId);
@@ -227,6 +155,7 @@ public class WallActivity extends AppCompatActivity {
         dialog.setOnImageUpdatedListener(new EditGroupBottomSheetDialog.OnImageUpdatedListener() {
             @Override
             public void onGroupDpUpdated(String image) {
+                groupImage=image;
                 Glide.with(getApplicationContext()).load(image).placeholder(R.drawable.loadingc).into(groupDp);
             }
         });
@@ -234,7 +163,7 @@ public class WallActivity extends AppCompatActivity {
 
     public void addMember(View view){
 
-        AddMemberBottomSheetDialog dialog = new AddMemberBottomSheetDialog(groupId, group.getMembers(),myId);
+        AddMemberBottomSheetDialog dialog = new AddMemberBottomSheetDialog(groupId,members,myId);
         dialog.show(getSupportFragmentManager(), "addMemberBottomSheetDialog");
         dialog.setOnMembersAddedListener(new AddMemberBottomSheetDialog.OnMembersAddedListener() {
             @Override
@@ -249,36 +178,5 @@ public class WallActivity extends AppCompatActivity {
 
     }
 
-    public void addMemory(View view){
-        SharedPreferences preferences=getSharedPreferences(getPackageName(), Context.MODE_PRIVATE);
-        String myId=preferences.getString("id",null);
-        AddMemoryBottomSheetDialog dialog=new AddMemoryBottomSheetDialog(groupId,myId);
-        dialog.show(getSupportFragmentManager(),"add_memory_dialog");
-    }
-    public void followWork(View view){
-        following=!following;
-        if(following){
-            followers++;
-        }else{
-            followers--;
-        }
-        performFollowLogic();
-        RetrofitClient client=new RetrofitClient();
-        Call<User> call=client.jsonPlaceHolderApi.followGroup(myId,groupId);
-        call.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                if(!response.isSuccessful()){
-                    Toast.makeText(WallActivity.this, response.message(), Toast.LENGTH_SHORT).show();
-                    return;
-                }
 
-            }
-
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                Toast.makeText(WallActivity.this, t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
 }

@@ -27,7 +27,7 @@ public interface JsonPlaceHolderApi {
     Call<User> logout(@Path("id") String id);
 
     @GET("user_detail/{username}")
-    Call<User> searchByUsername(@Path("username") String username);
+    Call<User> getUserDetails(@Path("username") String username);
 
     @GET("get_last_seen/")
     Call<User> getLastSeen(@Query("username") String username);
@@ -107,4 +107,7 @@ public interface JsonPlaceHolderApi {
 
     @POST("follow_group/")
     Call<User> followGroup(@Query("user_id") String userId,@Query("group_id") String groupId);
+
+    @GET("feeds/")
+    Call<List<MemoryRead> > getFeeds(@Query("user_id") String userId);
 }

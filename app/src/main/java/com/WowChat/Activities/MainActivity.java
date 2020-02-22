@@ -77,20 +77,33 @@ public class MainActivity extends AppCompatActivity {
         adapter.setOnItemClickListener(new ChatBoardAdapter.onItemClickListener() {
             @Override
             public void onItemClick(UserInfoTable userInfoTable) {
-                Intent intent=new Intent(getApplicationContext(),ChatActivity.class);
-                intent.putExtra("username",userInfoTable.getPersonUsername());
-                intent.putExtra("firstName",userInfoTable.getPersonFirstName());
-                intent.putExtra("lastName",userInfoTable.getPersonLastName());
-                intent.putExtra("email",userInfoTable.getPersonEmail());
-                intent.putExtra("image",userInfoTable.getPersonImage());
-                intent.putExtra("id",userInfoTable.getPersonId());
-                startActivity(intent);
+                if(userInfoTable.getIsGroup()==1){
+                    Intent intent=new Intent(getApplicationContext(),GroupChatActivity.class);
+                    intent.putExtra("group_id",userInfoTable.getPersonUsername());//username is groupId as well
+                    intent.putExtra("name",userInfoTable.getPersonFirstName());
+                    intent.putExtra("image",userInfoTable.getPersonImage());
+                    startActivity(intent);
+                }else {
+                    Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+                    intent.putExtra("username", userInfoTable.getPersonUsername());
+                    intent.putExtra("firstName", userInfoTable.getPersonFirstName());
+                    intent.putExtra("lastName", userInfoTable.getPersonLastName());
+                    intent.putExtra("email", userInfoTable.getPersonEmail());
+                    intent.putExtra("image", userInfoTable.getPersonImage());
+                    intent.putExtra("id", userInfoTable.getPersonId());
+                    startActivity(intent);
+                }
             }
 
             @Override
             public void onItemLongClick(UserInfoTable userInfoTable) {
-                ChatBoardBottomSheetDialog dialog=new ChatBoardBottomSheetDialog(userInfoTable.getPersonId());
-                dialog.show(getSupportFragmentManager(),"chatboard_bottom_sheet");
+                if(userInfoTable.getIsGroup()==1){
+                    GroupBottomSheetDialog dialog=new GroupBottomSheetDialog(userInfoTable.getPersonUsername());
+                    dialog.show(getSupportFragmentManager(),"group_bottom_sheet");
+                }else {
+                    ChatBoardBottomSheetDialog dialog = new ChatBoardBottomSheetDialog(userInfoTable.getPersonId());
+                    dialog.show(getSupportFragmentManager(), "chatboard_bottom_sheet");
+                }
             }
         });
     }
@@ -151,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void goToGroups(View view) {
-        Intent intent=new Intent(getApplicationContext(),GroupActivity.class);
+        Intent intent=new Intent(getApplicationContext(),NewGroupActivity.class);
         startActivity(intent);
     }
 

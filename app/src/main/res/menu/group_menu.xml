@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+   <!-- <item android:id="@+id/feeds" android:title="Feeds"
+        android:icon="@drawable/ic_public_blue"
+        app:showAsAction="always"/>
     <item android:id="@+id/groupSearch" android:title="Group Search"
         android:icon="@drawable/ic_location_searching_" app:showAsAction="always"/>
-
+-->
     <item android:id="@+id/create_group" android:title="Create Group"
         android:icon="@drawable/ic_add_"
         app:showAsAction="always"/>

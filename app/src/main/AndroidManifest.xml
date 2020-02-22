@@ -11,11 +11,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Activities.OtherGroupActivity" android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".Activities.OtherGroupActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".Activities.GroupQueryActivity" />
         <activity android:name=".Activities.GalleryActivity" />
-        <activity android:name=".Activities.WallActivity" android:screenOrientation="portrait" />
-        <activity android:name=".Activities.NewGroupActivity" android:screenOrientation="portrait"/>
+        <activity
+            android:name=".Activities.WallActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.NewGroupActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Activities.GroupChatActivity"
             android:screenOrientation="portrait"
@@ -34,7 +40,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".Activities.OtherProfileActivity" />
-        <activity android:name=".Activities.ProfileActivity" />
+        <activity android:name=".Activities.ProfileActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".Activities.SearchActivity" />
         <activity
             android:name=".Activities.ChatActivity"
@@ -55,8 +62,8 @@
             </intent-filter>
         </service>
     </application>
-    <uses-permission android:name="android.permission.INTERNET" />
-
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>
