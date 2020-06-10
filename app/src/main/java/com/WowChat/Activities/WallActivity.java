@@ -13,39 +13,25 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.lifecycle.Observer;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.WowChat.Adapters.ImageAdapter;
 import com.WowChat.Adapters.MembersAdapter;
-import com.WowChat.Adapters.MemoryAdapter;
-import com.WowChat.Adapters.SelectedFriendsAdapter;
 import com.WowChat.ModalBottomSheet.AddMemberBottomSheetDialog;
-import com.WowChat.ModalBottomSheet.AddMemoryBottomSheetDialog;
 import com.WowChat.ModalBottomSheet.EditGroupBottomSheetDialog;
 import com.WowChat.R;
-import com.WowChat.Repository.GroupRepository;
 import com.WowChat.Retrofit.GroupRead;
-import com.WowChat.Retrofit.MemoryRead;
 import com.WowChat.Retrofit.RetrofitClient;
 import com.WowChat.Retrofit.User;
-import com.WowChat.Room.Entities.GroupTable;
 import com.WowChat.Room.Entities.UserInfoTable;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import pl.droidsonroids.gif.GifImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 
 public class WallActivity extends AppCompatActivity {
     String groupId,groupImage,groupName;

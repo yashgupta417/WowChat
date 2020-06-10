@@ -11,24 +11,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         android:usesCleartextTraffic="true">
-        <activity
-            android:name=".Activities.OtherGroupActivity"
-            android:screenOrientation="portrait" />
-        <activity android:name=".Activities.GroupQueryActivity" />
         <activity android:name=".Activities.GalleryActivity" />
-        <activity
-            android:name=".Activities.WallActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".Activities.NewGroupActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".Activities.GroupChatActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
-        <activity
-            android:name=".Activities.GroupActivity"
-            android:screenOrientation="portrait" />
+
         <activity android:name=".Activities.ImageViewerActivity" />
         <activity
             android:name=".Activities.SplashActivity"
@@ -40,8 +24,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".Activities.OtherProfileActivity" />
-        <activity android:name=".Activities.ProfileActivity"
-            android:screenOrientation="portrait" />
         <activity android:name=".Activities.SearchActivity" />
         <activity
             android:name=".Activities.ChatActivity"
@@ -55,7 +37,7 @@
             android:resource="@array/preloaded_fonts" />
 
         <service
-            android:name=".Services.MyFirebaseMessagingService"
+            android:name=".FCM.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

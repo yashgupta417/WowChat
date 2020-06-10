@@ -1,39 +1,31 @@
-package com.WowChat.Services;
+package com.WowChat.FCM;
 
 import android.app.ActivityManager;
 import android.app.KeyguardManager;
 import android.app.Notification;
 import android.app.PendingIntent;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.AudioAttributes;
-import android.net.Uri;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
-import androidx.lifecycle.Observer;
 
 import com.WowChat.Activities.MainActivity;
 import com.WowChat.Repository.GroupRepository;
 import com.WowChat.Repository.MyRepository;
 import com.WowChat.Retrofit.FCMToken;
-import com.WowChat.Retrofit.GroupMessage;
 import com.WowChat.Retrofit.Message;
 import com.WowChat.Retrofit.RetrofitClient;
 import com.WowChat.Room.Entities.GroupMessageTable;
-import com.WowChat.Room.Entities.GroupTable;
 import com.WowChat.Room.Entities.MessageTable;
 import com.WowChat.Room.Entities.UserInfoTable;
 import com.WowChat.R;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;

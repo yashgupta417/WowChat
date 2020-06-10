@@ -26,16 +26,9 @@ public class RetrofitClient {
         retrofit=new Retrofit.Builder()
                 .baseUrl("http://yashgupta4172.pythonanywhere.com/api/")
                 .addConverterFactory(GsonConverterFactory.create())
-
                 .client(okHttpClient)
                 .build();
         jsonPlaceHolderApi=retrofit.create(JsonPlaceHolderApi.class);
     }
-
-
-
-
-
-
 
 }
