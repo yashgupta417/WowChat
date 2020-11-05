@@ -29,8 +29,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SignupActivity extends AppCompatActivity {
-    public EditText firstName;
-    public EditText lastName;
+    public EditText name;
+    //public EditText lastName;
     public EditText username;
     public EditText email;
     public EditText password;
@@ -49,8 +49,8 @@ public class SignupActivity extends AppCompatActivity {
     public void initializeUIElements(){
         Toolbar toolbar=findViewById(R.id.signup_toolbar);
         setSupportActionBar(toolbar);
-        firstName=(EditText)findViewById(R.id.first_name);
-        lastName=findViewById(R.id.last_name);
+        name=findViewById(R.id.name);
+        //lastName=findViewById(R.id.last_name);
         username=findViewById(R.id.username);
         email=findViewById(R.id.email);
         password=findViewById(R.id.password);
@@ -62,18 +62,20 @@ public class SignupActivity extends AppCompatActivity {
         return email.matches(regex);
     }
     public void signUp(View view){
-        String fName=firstName.getText().toString().trim();
-        String lName=lastName.getText().toString().trim();
+        String nameString=name.getText().toString().trim();
         String uName=username.getText().toString().trim();
         String eMail=email.getText().toString().trim();
         pass=password.getText().toString().trim();
 
-        if(fName.isEmpty()){
-            Toast.makeText(this, "First Name can't be empty", Toast.LENGTH_SHORT).show();
+        if(nameString.isEmpty()){
+            Toast.makeText(this, "Name can't be empty", Toast.LENGTH_SHORT).show();
             return;
         }
-        if(lName==null){
-            lName="";
+        String fName="",lName="";
+        String[] nameArray=nameString.split(" ",2);
+        fName=nameArray[0];
+        if(nameArray.length>1){
+            lName=nameArray[1];
         }
 
         for(int i=0;i<uName.length();i++){
