@@ -64,8 +64,13 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void login(View view){
-
-        login(username.getText().toString(),password.getText().toString());
+        String usernameString=username.getText().toString().trim();
+        String passwordString=password.getText().toString().trim();
+        if(usernameString.isEmpty() || passwordString.isEmpty()){
+            Toast.makeText(this, "Please enter username and password", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        login(usernameString,passwordString);
 
     }
     public void login(String username, String password){
