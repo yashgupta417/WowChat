@@ -57,23 +57,42 @@ public class SignupActivity extends AppCompatActivity {
         load=findViewById(R.id.signup_load);
         signupButton=findViewById(R.id.signup_button);
     }
+    static boolean isEmailValid(String email) {
+        String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
+        return email.matches(regex);
+    }
     public void signUp(View view){
-        String fName=firstName.getText().toString();
-        String lName=lastName.getText().toString();
-        String uName=username.getText().toString();
-        String eMail=email.getText().toString();
-         pass=password.getText().toString();
+        String fName=firstName.getText().toString().trim();
+        String lName=lastName.getText().toString().trim();
+        String uName=username.getText().toString().trim();
+        String eMail=email.getText().toString().trim();
+        pass=password.getText().toString().trim();
 
-        if(fName.trim().isEmpty() || lName.trim().isEmpty() || uName.trim().isEmpty() || eMail.trim().isEmpty()){
-            Toast.makeText(this, "All fields are required", Toast.LENGTH_SHORT).show();
+        if(fName.isEmpty()){
+            Toast.makeText(this, "First Name can't be empty", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(lName==null){
+            lName="";
+        }
+
+        for(int i=0;i<uName.length();i++){
+            if(!(Character.isLetterOrDigit(uName.charAt(i)) || uName.charAt(i)=='_')){
+                Toast.makeText(this, "Invalid Username", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+        if(!isEmailValid(eMail)){
+            Toast.makeText(this, "Invalid Email", Toast.LENGTH_SHORT).show();
             return;
         }
         if(pass.length()<8){
-            Toast.makeText(this, "password must be of atleast 8 characters", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Password must be of at least 8 characters", Toast.LENGTH_SHORT).show();
             return;
         }
-        if(username.getText().toString().contains(" ")){
-            Toast.makeText(this, "Username can't have spaces", Toast.LENGTH_SHORT).show();
+
+        if(pass.contains(fName)){
+            Toast.makeText(this, "Password can not contain name and username", Toast.LENGTH_SHORT).show();
             return;
         }
         User user=new User(uName,eMail,fName,lName,pass);

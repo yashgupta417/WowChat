@@ -25,12 +25,16 @@
         </activity>
         <activity android:name=".Activities.OtherProfileActivity" />
         <activity android:name=".Activities.SearchActivity" />
+        <activity android:name=".Activities.ProfileActivity"/>
+        <activity android:name=".Activities.NewGroupActivity"/>
         <activity
             android:name=".Activities.ChatActivity"
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity android:name=".Activities.LoginActivity" />
         <activity android:name=".Activities.SignupActivity" />
         <activity android:name=".Activities.MainActivity" />
+        <activity android:name=".Activities.GroupChatActivity"/>
+        <activity android:name=".Activities.WallActivity"/>
 
         <meta-data
             android:name="preloaded_fonts"
